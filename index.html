@@ -1,1 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Monk Ki Tracker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="header">
+        <h1>Monk Ki Tracker</h1>
+        <p class="sub">Bare-minimum UI, level sets max Ki, rests refill.</p>
+      </header>
+
+      <section class="card">
+        <div class="row">
+          <label for="levelInput" class="label">Monk Level (1 to 20)</label>
+          <input id="levelInput" type="number" min="1" max="20" step="1" />
+        </div>
+
+        <div class="kiArea">
+          <div class="kiHeader">
+            <div class="kiTitle">Ki</div>
+            <div class="kiNumbers">
+              <span id="kiCurrent">0</span>
+              <span class="muted">/</span>
+              <span id="kiMax">0</span>
+            </div>
+          </div>
+
+          <div class="kiControls">
+            <button id="minusBtn" class="circleBtn" type="button" aria-label="Spend 1 Ki">-</button>
+            <div class="ring" aria-label="Ki ring (visual placeholder)">
+              <div class="ringText" id="ringText">0 / 0</div>
+            </div>
+            <button id="plusBtn" class="circleBtn" type="button" aria-label="Regain 1 Ki">+</button>
+          </div>
+
+          <div class="restControls">
+            <button id="shortRestBtn" class="restBtn" type="button">Short Rest</button>
+            <button id="longRestBtn" class="restBtn" type="button">Long Rest</button>
+          </div>
+
+          <div class="hint">
+            Note: In 5e (2014), Ki starts at level 2, level 1 has 0 Ki.
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Ability Reference</h2>
+        <p class="sub muted">
+          Placeholder area. It grows with level. Later you can load your abilities file here.
+        </p>
+        <textarea id="abilityBox" class="abilityBox" spellcheck="false" placeholder="Put ability notes here for now..."></textarea>
+      </section>
+
+      <footer class="footer muted">
+        Data is saved locally in your browser (localStorage).
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
 
