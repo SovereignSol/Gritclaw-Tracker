@@ -4,13 +4,180 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Monk Ki Tracker</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --card: #121a23;
+        --text: #e9eef5;
+        --muted: #97a6b8;
+        --border: #223041;
+        --btn: #1a2735;
+        --btnHover: #223447;
+        --ring: #2b3f55;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+
+      .header h1 {
+        margin: 0 0 6px;
+        font-size: 28px;
+        letter-spacing: 0.2px;
+      }
+
+      .sub {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .card {
+        margin-top: 16px;
+        padding: 16px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 120px;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .label {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 10px 10px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: #0f1620;
+        color: var(--text);
+        outline: none;
+      }
+
+      .kiArea {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+
+      .kiHeader {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+      }
+
+      .kiTitle {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .kiNumbers {
+        font-size: 16px;
+      }
+
+      .muted { color: var(--muted); }
+
+      .kiControls {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: 64px 1fr 64px;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .circleBtn {
+        width: 56px;
+        height: 56px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--btn);
+        color: var(--text);
+        font-size: 26px;
+        cursor: pointer;
+      }
+
+      .circleBtn:hover { background: var(--btnHover); }
+      .circleBtn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+      .ring {
+        height: 86px;
+        border-radius: 999px;
+        border: 3px solid var(--ring);
+        display: grid;
+        place-items: center;
+      }
+
+      .ringText {
+        font-size: 18px;
+        color: var(--text);
+      }
+
+      .restControls {
+        margin-top: 14px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .restBtn {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--btn);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .restBtn:hover { background: var(--btnHover); }
+
+      .hint {
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .abilityBox {
+        width: 100%;
+        margin-top: 10px;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #0f1620;
+        color: var(--text);
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      .footer {
+        margin-top: 16px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+    </style>
   </head>
+
   <body>
     <main class="wrap">
       <header class="header">
         <h1>Monk Ki Tracker</h1>
-        <p class="sub">Bare-minimum UI, level sets max Ki, rests refill.</p>
+        <p class="sub">Single-file version, level sets max Ki, rests refill.</p>
       </header>
 
       <section class="card">
@@ -43,25 +210,156 @@
           </div>
 
           <div class="hint">
-            Note: In 5e (2014), Ki starts at level 2, level 1 has 0 Ki.
+            Ki starts at Monk level 2. Level 1 has 0 Ki. Level 2 to 20 has Ki equal to Monk level.
           </div>
         </div>
       </section>
 
       <section class="card">
         <h2>Ability Reference</h2>
-        <p class="sub muted">
-          Placeholder area. It grows with level. Later you can load your abilities file here.
-        </p>
+        <p class="sub muted">Placeholder area, it grows with level.</p>
         <textarea id="abilityBox" class="abilityBox" spellcheck="false" placeholder="Put ability notes here for now..."></textarea>
       </section>
 
-      <footer class="footer muted">
-        Data is saved locally in your browser (localStorage).
-      </footer>
+      <footer class="footer">Saved in your browser (localStorage).</footer>
     </main>
 
-    <script src="./app.js"></script>
+    <script>
+      "use strict";
+
+      const STORAGE_KEY = "monk_ki_tracker_singlefile_v1";
+
+      function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+      }
+
+      // 5e (2014): Ki starts at level 2 and equals monk level thereafter
+      function getMaxKi(level) {
+        level = Number(level);
+        if (!Number.isFinite(level)) return 0;
+        if (level <= 1) return 0;
+        return clamp(level, 2, 20);
+      }
+
+      function calcAbilityBoxMinHeight(level) {
+        const base = 140;
+        const perLevel = 10;
+        const h = base + (clamp(level, 1, 20) - 1) * perLevel;
+        return clamp(h, 140, 340);
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { level: 2, ki: 2, notes: "" };
+          const parsed = JSON.parse(raw);
+          return {
+            level: clamp(Number(parsed.level) || 2, 1, 20),
+            ki: Math.max(0, Number(parsed.ki) || 0),
+            notes: typeof parsed.notes === "string" ? parsed.notes : "",
+          };
+        } catch {
+          return { level: 2, ki: 2, notes: "" };
+        }
+      }
+
+      function saveState(state) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      const el = {
+        levelInput: null,
+        kiCurrent: null,
+        kiMax: null,
+        ringText: null,
+        minusBtn: null,
+        plusBtn: null,
+        shortRestBtn: null,
+        longRestBtn: null,
+        abilityBox: null,
+      };
+
+      let state = loadState();
+
+      function normalizeState() {
+        state.level = clamp(Number(state.level) || 1, 1, 20);
+        const maxKi = getMaxKi(state.level);
+        state.ki = clamp(Number(state.ki) || 0, 0, maxKi);
+        if (typeof state.notes !== "string") state.notes = "";
+      }
+
+      function render() {
+        normalizeState();
+
+        const maxKi = getMaxKi(state.level);
+
+        el.levelInput.value = String(state.level);
+        el.kiCurrent.textContent = String(state.ki);
+        el.kiMax.textContent = String(maxKi);
+        el.ringText.textContent = `${state.ki} / ${maxKi}`;
+
+        el.minusBtn.disabled = state.ki <= 0;
+        el.plusBtn.disabled = state.ki >= maxKi;
+
+        el.abilityBox.style.minHeight = `${calcAbilityBoxMinHeight(state.level)}px`;
+
+        saveState(state);
+      }
+
+      function refillKi() {
+        const maxKi = getMaxKi(state.level);
+        state.ki = maxKi;
+        render();
+      }
+
+      function init() {
+        el.levelInput = document.getElementById("levelInput");
+        el.kiCurrent = document.getElementById("kiCurrent");
+        el.kiMax = document.getElementById("kiMax");
+        el.ringText = document.getElementById("ringText");
+        el.minusBtn = document.getElementById("minusBtn");
+        el.plusBtn = document.getElementById("plusBtn");
+        el.shortRestBtn = document.getElementById("shortRestBtn");
+        el.longRestBtn = document.getElementById("longRestBtn");
+        el.abilityBox = document.getElementById("abilityBox");
+
+        el.abilityBox.value = state.notes || "";
+
+        // This is the key fix: level changes recompute max Ki immediately.
+        el.levelInput.addEventListener("input", () => {
+          const lvl = clamp(Number(el.levelInput.value), 1, 20);
+          state.level = Number.isFinite(lvl) ? lvl : 1;
+
+          // Clamp current Ki to new max (so it never stays above the new maximum).
+          const newMax = getMaxKi(state.level);
+          state.ki = clamp(state.ki, 0, newMax);
+
+          render();
+        });
+
+        el.minusBtn.addEventListener("click", () => {
+          state.ki = Math.max(0, state.ki - 1);
+          render();
+        });
+
+        el.plusBtn.addEventListener("click", () => {
+          const maxKi = getMaxKi(state.level);
+          state.ki = Math.min(maxKi, state.ki + 1);
+          render();
+        });
+
+        el.shortRestBtn.addEventListener("click", refillKi);
+        el.longRestBtn.addEventListener("click", refillKi);
+
+        el.abilityBox.addEventListener("input", () => {
+          state.notes = el.abilityBox.value;
+          saveState(state);
+        });
+
+        render();
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
   </body>
 </html>
-
