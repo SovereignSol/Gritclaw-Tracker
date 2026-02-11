@@ -14,6 +14,7 @@
         --btn: #1a2735;
         --btnHover: #223447;
         --ring: #2b3f55;
+        --danger: #ff6b6b;
       }
 
       * { box-sizing: border-box; }
@@ -26,7 +27,7 @@
       }
 
       .wrap {
-        max-width: 820px;
+        max-width: 920px;
         margin: 0 auto;
         padding: 24px 16px 48px;
       }
@@ -52,7 +53,7 @@
 
       .row {
         display: grid;
-        grid-template-columns: 1fr 120px;
+        grid-template-columns: 1fr 140px;
         gap: 12px;
         align-items: center;
       }
@@ -82,6 +83,7 @@
         display: flex;
         align-items: baseline;
         justify-content: space-between;
+        gap: 12px;
       }
 
       .kiTitle {
@@ -134,6 +136,7 @@
         margin-top: 14px;
         display: flex;
         gap: 10px;
+        flex-wrap: wrap;
       }
 
       .restBtn {
@@ -152,6 +155,154 @@
         font-size: 13px;
         color: var(--muted);
       }
+
+      .sectionTitle {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .abilityGrid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      @media (min-width: 780px) {
+        .abilityGrid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .abilityCard {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(0,0,0,0.12);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .abilityName {
+        font-weight: 650;
+        letter-spacing: 0.2px;
+      }
+
+      .abilityMeta {
+        margin-top: 4px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .abilityBtns {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .useBtn {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--btn);
+        color: var(--text);
+        cursor: pointer;
+        min-width: 92px;
+      }
+
+      .useBtn:hover { background: var(--btnHover); }
+      .useBtn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+      .infoBtn {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .infoBtn:hover { background: rgba(255,255,255,0.06); }
+
+      .statusBar {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+        min-height: 18px;
+      }
+
+      .statusBar.error {
+        color: var(--danger);
+      }
+
+      dialog {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 0;
+        background: #0f1620;
+        color: var(--text);
+        max-width: 680px;
+        width: calc(100% - 24px);
+      }
+
+      dialog::backdrop {
+        background: rgba(0,0,0,0.65);
+      }
+
+      .dlgHead {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .dlgTitle {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .dlgBody {
+        padding: 14px;
+        color: var(--text);
+      }
+
+      .dlgBody p {
+        margin: 0 0 10px;
+        color: var(--text);
+        line-height: 1.45;
+      }
+
+      .dlgBody .mutedLine {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .dlgActions {
+        padding: 12px 14px 14px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      .dlgClose {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--btn);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .dlgClose:hover { background: var(--btnHover); }
 
       .abilityBox {
         width: 100%;
@@ -177,10 +328,10 @@
     <main class="wrap">
       <header class="header">
         <h1>Monk Ki Tracker</h1>
-        <p class="sub">Single-file version, level sets max Ki, rests refill.</p>
+        <p class="sub">Bottom-up build, core Ki and core Ki abilities.</p>
       </header>
 
-      <section class="card">
+      <section class="card" aria-label="Ki tracker">
         <div class="row">
           <label for="levelInput" class="label">Monk Level (1 to 20)</label>
           <input id="levelInput" type="number" min="1" max="20" step="1" />
@@ -205,8 +356,8 @@
           </div>
 
           <div class="restControls">
-            <button id="shortRestBtn" class="restBtn" type="button">Short Rest</button>
-            <button id="longRestBtn" class="restBtn" type="button">Long Rest</button>
+            <button id="shortRestBtn" class="restBtn" type="button">Short Rest (refill Ki)</button>
+            <button id="longRestBtn" class="restBtn" type="button">Long Rest (refill Ki)</button>
           </div>
 
           <div class="hint">
@@ -215,19 +366,44 @@
         </div>
       </section>
 
+      <section class="card" aria-label="Ki abilities">
+        <div class="sectionTitle">
+          <h2 style="margin:0;">Ki Abilities</h2>
+          <div class="sub muted">Tap Use to spend Ki, tap ? for the definition.</div>
+        </div>
+
+        <div id="abilityGrid" class="abilityGrid"></div>
+
+        <div id="statusBar" class="statusBar" role="status" aria-live="polite"></div>
+      </section>
+
       <section class="card">
-        <h2>Ability Reference</h2>
-        <p class="sub muted">Placeholder area, it grows with level.</p>
-        <textarea id="abilityBox" class="abilityBox" spellcheck="false" placeholder="Put ability notes here for now..."></textarea>
+        <h2 style="margin:0;">Ability Reference Notes</h2>
+        <p class="sub muted">Optional notes area, saved locally.</p>
+        <textarea id="abilityBox" class="abilityBox" spellcheck="false" placeholder="Put notes here..."></textarea>
       </section>
 
       <footer class="footer">Saved in your browser (localStorage).</footer>
+
+      <dialog id="infoDialog" aria-label="Ability definition dialog">
+        <div class="dlgHead">
+          <h3 class="dlgTitle" id="dlgTitle">Ability</h3>
+          <button class="infoBtn" id="dlgX" type="button" aria-label="Close dialog">×</button>
+        </div>
+        <div class="dlgBody">
+          <p id="dlgDesc"></p>
+          <div class="mutedLine" id="dlgCost"></div>
+        </div>
+        <div class="dlgActions">
+          <button class="dlgClose" id="dlgClose" type="button">Close</button>
+        </div>
+      </dialog>
     </main>
 
     <script>
       "use strict";
 
-      const STORAGE_KEY = "monk_ki_tracker_singlefile_v1";
+      const STORAGE_KEY = "monk_ki_tracker_v2_ki_abilities";
 
       function clamp(n, min, max) {
         return Math.max(min, Math.min(max, n));
@@ -248,6 +424,31 @@
         return clamp(h, 140, 340);
       }
 
+      // Core Ki abilities you asked for
+      const KI_ABILITIES = [
+        {
+          id: "flurry_of_blows",
+          name: "Flurry of Blows",
+          cost: 1,
+          desc:
+            "Immediately after you take the Attack action on your turn, you can spend 1 Ki point to make two unarmed strikes as a bonus action.",
+        },
+        {
+          id: "patient_defense",
+          name: "Patient Defense",
+          cost: 1,
+          desc:
+            "You can spend 1 Ki point to take the Dodge action as a bonus action on your turn.",
+        },
+        {
+          id: "step_of_the_wind",
+          name: "Step of the Wind",
+          cost: 1,
+          desc:
+            "You can spend 1 Ki point to take the Disengage or Dash action as a bonus action on your turn, and your jump distance is doubled for the turn.",
+        },
+      ];
+
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -267,18 +468,7 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       }
 
-      const el = {
-        levelInput: null,
-        kiCurrent: null,
-        kiMax: null,
-        ringText: null,
-        minusBtn: null,
-        plusBtn: null,
-        shortRestBtn: null,
-        longRestBtn: null,
-        abilityBox: null,
-      };
-
+      const el = {};
       let state = loadState();
 
       function normalizeState() {
@@ -286,6 +476,91 @@
         const maxKi = getMaxKi(state.level);
         state.ki = clamp(Number(state.ki) || 0, 0, maxKi);
         if (typeof state.notes !== "string") state.notes = "";
+      }
+
+      function setStatus(msg, isError = false) {
+        el.statusBar.textContent = msg || "";
+        el.statusBar.classList.toggle("error", Boolean(isError));
+      }
+
+      function openInfo(ability) {
+        el.dlgTitle.textContent = ability.name;
+        el.dlgDesc.textContent = ability.desc;
+        el.dlgCost.textContent = `Ki cost: ${ability.cost}`;
+        if (typeof el.infoDialog.showModal === "function") {
+          el.infoDialog.showModal();
+        } else {
+          alert(`${ability.name}\n\n${ability.desc}\n\nKi cost: ${ability.cost}`);
+        }
+      }
+
+      function spendKi(amount) {
+        normalizeState();
+        if (amount <= 0) return true;
+        if (state.ki < amount) return false;
+        state.ki -= amount;
+        return true;
+      }
+
+      function refillKi() {
+        const maxKi = getMaxKi(state.level);
+        state.ki = maxKi;
+        render();
+        setStatus("Ki refilled.");
+      }
+
+      function buildAbilityGrid() {
+        el.abilityGrid.innerHTML = "";
+
+        for (const ability of KI_ABILITIES) {
+          const card = document.createElement("div");
+          card.className = "abilityCard";
+
+          const left = document.createElement("div");
+          const title = document.createElement("div");
+          title.className = "abilityName";
+          title.textContent = ability.name;
+
+          const meta = document.createElement("div");
+          meta.className = "abilityMeta";
+          meta.textContent = `Cost: ${ability.cost} Ki`;
+
+          left.appendChild(title);
+          left.appendChild(meta);
+
+          const btns = document.createElement("div");
+          btns.className = "abilityBtns";
+
+          const useBtn = document.createElement("button");
+          useBtn.className = "useBtn";
+          useBtn.type = "button";
+          useBtn.textContent = "Use";
+          useBtn.addEventListener("click", () => {
+            const ok = spendKi(ability.cost);
+            if (!ok) {
+              setStatus(`Not enough Ki to use ${ability.name}.`, true);
+              render();
+              return;
+            }
+            setStatus(`${ability.name} used, spent ${ability.cost} Ki.`);
+            render();
+          });
+
+          const infoBtn = document.createElement("button");
+          infoBtn.className = "infoBtn";
+          infoBtn.type = "button";
+          infoBtn.textContent = "?";
+          infoBtn.setAttribute("aria-label", `Show definition for ${ability.name}`);
+          infoBtn.addEventListener("click", () => openInfo(ability));
+
+          btns.appendChild(useBtn);
+          btns.appendChild(infoBtn);
+
+          card.appendChild(left);
+          card.appendChild(btns);
+
+          el.abilityGrid.appendChild(card);
+        }
       }
 
       function render() {
@@ -301,15 +576,17 @@
         el.minusBtn.disabled = state.ki <= 0;
         el.plusBtn.disabled = state.ki >= maxKi;
 
+        // Disable "Use" buttons if not enough Ki or no Ki pool yet
+        const useButtons = el.abilityGrid.querySelectorAll(".useBtn");
+        KI_ABILITIES.forEach((a, idx) => {
+          const btn = useButtons[idx];
+          if (!btn) return;
+          btn.disabled = state.ki < a.cost || maxKi === 0;
+        });
+
         el.abilityBox.style.minHeight = `${calcAbilityBoxMinHeight(state.level)}px`;
 
         saveState(state);
-      }
-
-      function refillKi() {
-        const maxKi = getMaxKi(state.level);
-        state.ki = maxKi;
-        render();
       }
 
       function init() {
@@ -322,29 +599,42 @@
         el.shortRestBtn = document.getElementById("shortRestBtn");
         el.longRestBtn = document.getElementById("longRestBtn");
         el.abilityBox = document.getElementById("abilityBox");
+        el.abilityGrid = document.getElementById("abilityGrid");
+        el.statusBar = document.getElementById("statusBar");
+
+        el.infoDialog = document.getElementById("infoDialog");
+        el.dlgTitle = document.getElementById("dlgTitle");
+        el.dlgDesc = document.getElementById("dlgDesc");
+        el.dlgCost = document.getElementById("dlgCost");
+        el.dlgClose = document.getElementById("dlgClose");
+        el.dlgX = document.getElementById("dlgX");
+
+        buildAbilityGrid();
 
         el.abilityBox.value = state.notes || "";
 
-        // This is the key fix: level changes recompute max Ki immediately.
         el.levelInput.addEventListener("input", () => {
           const lvl = clamp(Number(el.levelInput.value), 1, 20);
           state.level = Number.isFinite(lvl) ? lvl : 1;
 
-          // Clamp current Ki to new max (so it never stays above the new maximum).
+          // Clamp current Ki to new maximum immediately
           const newMax = getMaxKi(state.level);
           state.ki = clamp(state.ki, 0, newMax);
 
+          setStatus("");
           render();
         });
 
         el.minusBtn.addEventListener("click", () => {
           state.ki = Math.max(0, state.ki - 1);
+          setStatus("");
           render();
         });
 
         el.plusBtn.addEventListener("click", () => {
           const maxKi = getMaxKi(state.level);
           state.ki = Math.min(maxKi, state.ki + 1);
+          setStatus("");
           render();
         });
 
@@ -354,6 +644,19 @@
         el.abilityBox.addEventListener("input", () => {
           state.notes = el.abilityBox.value;
           saveState(state);
+        });
+
+        el.dlgClose.addEventListener("click", () => el.infoDialog.close());
+        el.dlgX.addEventListener("click", () => el.infoDialog.close());
+        el.infoDialog.addEventListener("click", (e) => {
+          // Click outside the dialog content closes it
+          const rect = el.infoDialog.getBoundingClientRect();
+          const inDialog =
+            e.clientX >= rect.left &&
+            e.clientX <= rect.right &&
+            e.clientY >= rect.top &&
+            e.clientY <= rect.bottom;
+          if (!inDialog) el.infoDialog.close();
         });
 
         render();
