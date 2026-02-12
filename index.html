@@ -77,6 +77,13 @@
         background-image: var(--frame-reference, none);
       }
 
+      :root {
+  --frame-core: url("./UI/Frame_Core.webp");
+  --frame-mutations: url("./UI/Frame_Mutations.webp");
+  --frame-reference: url("./UI/Frame_Reference.webp");
+}
+
+
       /* If you want the old look when no frame image is set */
       .framed:not([data-has-frame="1"]) {
         background: rgba(18, 26, 35, 0.88);
@@ -868,8 +875,3 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
     </script>
   </body>
 </html>
-:root {
-  --frame-core: url("./UI/Frame_Core.webp");
-  --frame-mutations: url("./UI/Frame_Mutations.webp");
-  --frame-reference: url("./UI/Frame_Reference.webp");
-}
