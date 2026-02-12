@@ -334,23 +334,23 @@
     <main class="wrap">
       <header class="header">
         <h1>Monk KI Tracker</h1>
-        <p class="sub">Fixing image linking, configurable folders, and auto-fallback filename variants.</p>
+        <p class="sub">Default paths fixed (icons/ and UI/), auto-detect runs once on first load.</p>
       </header>
 
       <section class="card" aria-label="Asset paths">
         <div class="sectionTitle">
           <h2>Asset Paths</h2>
-          <div class="sub muted">If images do not show, set these folders.</div>
+          <div class="sub muted">Only change these if you rename folders.</div>
         </div>
 
         <div class="grid2">
           <div>
-            <div class="label">Icons folder (example: <code class="inline">icons/</code> or <code class="inline">assets/icons/</code>)</div>
-            <input id="iconsBaseInput" type="text" placeholder="icons/" />
+            <div class="label">Icons folder (yours is <code class="inline">icons/</code>)</div>
+            <input id="iconsBaseInput" type="text" />
           </div>
           <div>
-            <div class="label">UI folder (example: <code class="inline">ui/</code> or <code class="inline">assets/ui/</code>)</div>
-            <input id="uiBaseInput" type="text" placeholder="ui/" />
+            <div class="label">UI folder (yours is <code class="inline">UI/</code>, case-sensitive)</div>
+            <input id="uiBaseInput" type="text" />
           </div>
         </div>
 
@@ -361,9 +361,7 @@
         </div>
 
         <div class="tiny">
-          Notes:
-          <div>1) GitHub Pages is case-sensitive. <code class="inline">Step_wind.webp</code> is different from <code class="inline">step_wind.webp</code>.</div>
-          <div>2) Your UI background file in the screenshot looks like it might be <code class="inline">UI background.webp</code> (with a space). This page tries both space and underscore versions automatically.</div>
+          GitHub Pages is case-sensitive. Your UI folder is <code class="inline">UI</code> (uppercase), not <code class="inline">ui</code>.
         </div>
 
         <div id="assetStatus" class="statusBar"></div>
@@ -446,31 +444,16 @@
     <script>
       "use strict";
 
-      /*
-        Filenames extracted from your screenshots:
+      // Why it broke before:
+      // Your assets are NOT in the repo root. They live in:
+      // - icons/   (lowercase)
+      // - UI/      (uppercase)
+      // The previous default was "./", so it tried "./available_KI.webp" instead of "./UI/available_KI.webp".
+      // Auto-detect found the right folders, which is why clicking it fixed everything.
 
-        Icons:
-        - Adaptive_physiology.webp
-        - Chromatophore_Bloom.webp
-        - Extra_arms.webp
-        - Focused_aim.webp
-        - healing_factor.webp
-        - Patient_Defense.webp
-        - Reflexive_Tendril.webp
-        - separation_body_soul.webp
-        - Step_wind.webp
-        - Stunning_strike.webp
-
-        UI:
-        - available_KI.webp
-        - spent_KI.webp
-        - UI background.webp   (likely, with a space)
-          also tries: UI_background.webp
-          also tries: UI_background.webP, UI background.webP (rare, but safe)
-      */
-
-      const STORAGE_KEY = "monk_ki_tracker_v4_assets_autofix";
-      const PATHS_KEY = "monk_ki_paths_v1";
+      const STORAGE_KEY = "monk_ki_tracker_state_v1";
+      const PATHS_KEY = "monk_ki_paths_v2";
+      const FIRST_RUN_KEY = "monk_ki_first_run_v1";
 
       function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
       function getMaxKI(level) {
@@ -480,7 +463,6 @@
         return clamp(level, 2, 20);
       }
 
-      // Level tables you provided
       const UNARMORED_MOVE = [
         "-", "+10 ft.", "+10 ft.", "+10 ft.", "+10 ft.",
         "+15 ft.", "+15 ft.", "+15 ft.", "+15 ft.",
@@ -495,20 +477,18 @@
         "1d10","1d10","1d10","1d10"
       ];
 
-      // Asset filenames
       const FILES = {
         uiBackgroundCandidates: ["UI background.webp", "UI_background.webp", "UI background.webP", "UI_background.webP"],
         kiAvailable: "available_KI.webp",
         kiSpent: "spent_KI.webp",
       };
 
-      // Default candidate folders for auto-detect
+      // IMPORTANT: include your exact known folder names first
       const FOLDER_CANDIDATES = {
-        icons: ["./", "./icons/", "./Icons/", "./assets/icons/", "./assets/Icons/", "./img/icons/", "./images/icons/"],
-        ui: ["./", "./ui/", "./UI/", "./assets/ui/", "./assets/UI/", "./img/ui/", "./images/ui/"],
+        icons: ["./icons/", "./Icons/", "./", "./assets/icons/", "./img/icons/", "./images/icons/"],
+        ui: ["./UI/", "./ui/", "./", "./assets/ui/", "./img/ui/", "./images/ui/"],
       };
 
-      // KI abilities (level-gated)
       const KI_ABILITIES = [
         { id: "extra_arms", name: "Extra Arms", icon: "Extra_arms.webp", level: 2, cost: 1,
           desc: "Immediately after you take the Attack action on your turn, you can spend 1 ki point to make 4 unarmed strikes as a bonus action." },
@@ -560,64 +540,42 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           desc: "When you roll for initiative and have no ki points remaining, you regain 4 ki points." },
       ];
 
-      // DOM
-      const el = {};
-      let state = loadState();
-      let paths = loadPaths();
+      function normalizePath(p) {
+        p = (p || "").trim();
+        // accept values like "icons", "/icons", "./icons"
+        p = p.replace(/^\/+/, "");     // strip leading slashes
+        p = p.replace(/^\.\//, "");    // strip leading ./
+        if (!p) return "./";
+        if (!p.endsWith("/")) p += "/";
+        return "./" + p;
+      }
 
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return { level: 2, ki: 2 };
           const parsed = JSON.parse(raw);
-          return {
-            level: clamp(Number(parsed.level) || 2, 1, 20),
-            ki: Math.max(0, Number(parsed.ki) || 0),
-          };
+          return { level: clamp(Number(parsed.level) || 2, 1, 20), ki: Math.max(0, Number(parsed.ki) || 0) };
         } catch {
           return { level: 2, ki: 2 };
         }
       }
-      function saveState(s) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-      }
-
-      function normalizePath(p) {
-        p = (p || "").trim();
-        if (!p) return "./";
-        if (!p.endsWith("/")) p += "/";
-        if (p.startsWith("/")) p = "." + p;
-        return p;
-      }
+      function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
 
       function loadPaths() {
         try {
           const raw = localStorage.getItem(PATHS_KEY);
-          if (!raw) return { iconsBase: "./", uiBase: "./" };
+          if (!raw) return null;
           const p = JSON.parse(raw);
           return {
-            iconsBase: normalizePath(p.iconsBase || "./"),
-            uiBase: normalizePath(p.uiBase || "./"),
+            iconsBase: normalizePath(p.iconsBase || "icons/"),
+            uiBase: normalizePath(p.uiBase || "UI/"),
           };
         } catch {
-          return { iconsBase: "./", uiBase: "./" };
+          return null;
         }
       }
-      function savePaths(p) {
-        localStorage.setItem(PATHS_KEY, JSON.stringify(p));
-      }
-
-      function normalize() {
-        state.level = clamp(Number(state.level) || 1, 1, 20);
-        const max = getMaxKI(state.level);
-        state.ki = clamp(Number(state.ki) || 0, 0, max);
-      }
-
-      function setStatus(targetEl, msg, kind = "") {
-        targetEl.textContent = msg || "";
-        targetEl.classList.remove("ok", "error");
-        if (kind) targetEl.classList.add(kind);
-      }
+      function savePaths(p) { localStorage.setItem(PATHS_KEY, JSON.stringify(p)); }
 
       function preload(url) {
         return new Promise((resolve) => {
@@ -635,6 +593,24 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (r.ok) return url;
         }
         return null;
+      }
+
+      const el = {};
+      let state = loadState();
+
+      // Default to your real folders if nothing saved yet
+      let paths = loadPaths() || { iconsBase: "./icons/", uiBase: "./UI/" };
+
+      function normalize() {
+        state.level = clamp(Number(state.level) || 1, 1, 20);
+        const max = getMaxKI(state.level);
+        state.ki = clamp(Number(state.ki) || 0, 0, max);
+      }
+
+      function setStatus(targetEl, msg, kind = "") {
+        targetEl.textContent = msg || "";
+        targetEl.classList.remove("ok", "error");
+        if (kind) targetEl.classList.add(kind);
       }
 
       async function setBackground() {
@@ -663,8 +639,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
       function attachFallbackImg(imgEl, urlCandidates, altText) {
         let i = 0;
         imgEl.alt = altText || "image";
-        imgEl.referrerPolicy = "no-referrer"; // harmless, sometimes helps with odd hosting
         imgEl.loading = "lazy";
+        imgEl.referrerPolicy = "no-referrer";
 
         const tryNext = () => {
           if (i >= urlCandidates.length) {
@@ -692,11 +668,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           orb.className = "kiOrb";
           const img = document.createElement("img");
           const wantAvail = i <= state.ki;
-          attachFallbackImg(
-            img,
-            wantAvail ? [availUrl] : [spentUrl],
-            wantAvail ? "KI available" : "KI spent"
-          );
+          attachFallbackImg(img, [wantAvail ? availUrl : spentUrl], wantAvail ? "KI available" : "KI spent");
           orb.appendChild(img);
           el.kiBar.appendChild(orb);
         }
@@ -752,15 +724,10 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           iconWrap.className = "abilityIcon";
 
           const img = document.createElement("img");
-          const iconUrl = paths.iconsBase + a.icon;
-
-          // If missing, replace with a small text placeholder instead of a broken image
-          img.onload = () => {};
-          img.onerror = () => {
-            iconWrap.innerHTML = `<div class="missingIcon">Missing icon<br>${a.icon}</div>`;
-          };
-          img.src = iconUrl;
           img.alt = `${a.name} icon`;
+          img.onload = () => {};
+          img.onerror = () => { iconWrap.innerHTML = `<div class="missingIcon">Missing icon<br>${a.icon}</div>`; };
+          img.src = paths.iconsBase + a.icon;
           iconWrap.appendChild(img);
 
           const mid = document.createElement("div");
@@ -836,7 +803,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           el.abilityGrid.appendChild(card);
         }
 
-        // Disable Use buttons when not enough KI
         const useButtons = el.abilityGrid.querySelectorAll("button.btn");
         let i = 0;
         for (const a of availableAbilities) {
@@ -890,16 +856,12 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
       async function validateAssetsQuick() {
         const checks = [];
-
-        // UI orbs
         checks.push(preload(paths.uiBase + FILES.kiAvailable));
         checks.push(preload(paths.uiBase + FILES.kiSpent));
 
-        // Background (try candidates)
         const bgUrl = await resolveFirstWorking(paths.uiBase, FILES.uiBackgroundCandidates);
-        checks.push(Promise.resolve({ ok: Boolean(bgUrl), url: bgUrl || paths.uiBase + FILES.uiBackgroundCandidates[0] }));
+        checks.push(Promise.resolve({ ok: Boolean(bgUrl), url: bgUrl || (paths.uiBase + FILES.uiBackgroundCandidates[0]) }));
 
-        // One icon sample (if this fails, iconsBase is likely wrong)
         checks.push(preload(paths.iconsBase + "Patient_Defense.webp"));
 
         const results = await Promise.all(checks);
@@ -913,15 +875,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         }
 
         if (okCount === results.length) {
-          setStatus(el.assetStatus, "All checked assets loaded.\n" + lines.join("\n"), "ok");
+          setStatus(el.assetStatus, "Assets loaded.\n" + lines.join("\n"), "ok");
         } else {
-          setStatus(
-            el.assetStatus,
-            "Some assets did not load.\n" +
-              lines.join("\n") +
-              "\n\nFix: set Icons folder and UI folder above to the correct paths (they must match your repo folders exactly).",
-            "error"
-          );
+          setStatus(el.assetStatus, "Some assets did not load.\n" + lines.join("\n"), "error");
         }
       }
 
@@ -934,24 +890,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         renderReference();
       }
 
-      async function applyPathsFromInputs() {
-        paths.iconsBase = normalizePath(el.iconsBaseInput.value || "./");
-        paths.uiBase = normalizePath(el.uiBaseInput.value || "./");
-        savePaths(paths);
-        await render();
-        await validateAssetsQuick();
-      }
-
-      async function resetPaths() {
-        paths = { iconsBase: "./", uiBase: "./" };
-        savePaths(paths);
-        el.iconsBaseInput.value = "./";
-        el.uiBaseInput.value = "./";
-        await render();
-        await validateAssetsQuick();
-      }
-
-      async function autoDetect() {
+      async function autoDetectAndSave() {
         setStatus(el.assetStatus, "Auto-detecting folders...", "");
 
         let foundIcons = null;
@@ -967,8 +906,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (r1.ok && r2.ok) { foundUI = p; break; }
         }
 
-        paths.iconsBase = normalizePath(foundIcons || paths.iconsBase);
-        paths.uiBase = normalizePath(foundUI || paths.uiBase);
+        if (foundIcons) paths.iconsBase = foundIcons;
+        if (foundUI) paths.uiBase = foundUI;
+
         savePaths(paths);
 
         el.iconsBaseInput.value = paths.iconsBase;
@@ -977,14 +917,28 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         await render();
         await validateAssetsQuick();
 
-        if (!foundIcons || !foundUI) {
-          const msg =
-            "Auto-detect could not find everything.\n" +
-            `Icons folder found: ${foundIcons ? foundIcons : "(not found)"}\n` +
-            `UI folder found: ${foundUI ? foundUI : "(not found)"}\n\n` +
-            "If not found, your folders are probably named differently (or files are not in the repo root). Set the paths manually above.";
-          setStatus(el.assetStatus, msg, "error");
+        if (foundIcons && foundUI) {
+          setStatus(el.assetStatus, `Auto-detect successful.\nIcons: ${foundIcons}\nUI: ${foundUI}`, "ok");
+        } else {
+          setStatus(el.assetStatus, `Auto-detect partial.\nIcons: ${foundIcons || "(not found)"}\nUI: ${foundUI || "(not found)"}`, "error");
         }
+      }
+
+      async function applyPathsFromInputs() {
+        paths.iconsBase = normalizePath(el.iconsBaseInput.value || "icons/");
+        paths.uiBase = normalizePath(el.uiBaseInput.value || "UI/");
+        savePaths(paths);
+        await render();
+        await validateAssetsQuick();
+      }
+
+      async function resetPaths() {
+        paths = { iconsBase: "./icons/", uiBase: "./UI/" };
+        savePaths(paths);
+        el.iconsBaseInput.value = paths.iconsBase;
+        el.uiBaseInput.value = paths.uiBase;
+        await render();
+        await validateAssetsQuick();
       }
 
       function init() {
@@ -1017,12 +971,12 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
         el.levelInput.value = String(state.level);
 
-        // Load saved paths into UI
+        // Set inputs to current paths (defaults: ./icons/ and ./UI/)
         el.iconsBaseInput.value = paths.iconsBase;
         el.uiBaseInput.value = paths.uiBase;
 
         el.applyPathsBtn.addEventListener("click", applyPathsFromInputs);
-        el.autoDetectBtn.addEventListener("click", autoDetect);
+        el.autoDetectBtn.addEventListener("click", autoDetectAndSave);
         el.resetPathsBtn.addEventListener("click", resetPaths);
 
         el.levelInput.addEventListener("input", async () => {
@@ -1070,10 +1024,20 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (!inside) el.infoDialog.close();
         });
 
-        // Initial render + validation
+        // First paint with defaults (icons/UI), then verify.
+        // If someone clears localStorage or renames folders, auto-detect runs ONCE on first run.
         (async () => {
           await render();
           await validateAssetsQuick();
+
+          const firstRunDone = localStorage.getItem(FIRST_RUN_KEY) === "1";
+          const hasSavedPaths = Boolean(localStorage.getItem(PATHS_KEY));
+
+          if (!firstRunDone && !hasSavedPaths) {
+            // Run auto-detect only once on a fresh install so it "just works"
+            await autoDetectAndSave();
+            localStorage.setItem(FIRST_RUN_KEY, "1");
+          }
         })();
       }
 
