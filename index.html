@@ -3,18 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Monk Ki Tracker</title>
+    <title>Monk KI Tracker</title>
+
     <style>
       :root {
         --bg: #0b0f14;
-        --card: #121a23;
+        --card: rgba(18, 26, 35, 0.88);
         --text: #e9eef5;
         --muted: #97a6b8;
         --border: #223041;
-        --btn: #1a2735;
-        --btnHover: #223447;
-        --ring: #2b3f55;
+        --btn: rgba(26, 39, 53, 0.9);
+        --btnHover: rgba(34, 52, 71, 0.95);
         --danger: #ff6b6b;
+        --ok: #7ce6a5;
       }
 
       * { box-sizing: border-box; }
@@ -24,12 +25,13 @@
         font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
         background: var(--bg);
         color: var(--text);
+        min-height: 100vh;
       }
 
       .wrap {
-        max-width: 920px;
+        max-width: 1100px;
         margin: 0 auto;
-        padding: 24px 16px 48px;
+        padding: 22px 16px 56px;
       }
 
       .header h1 {
@@ -44,16 +46,17 @@
       }
 
       .card {
-        margin-top: 16px;
-        padding: 16px;
+        margin-top: 14px;
+        padding: 14px;
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 14px;
+        backdrop-filter: blur(2px);
       }
 
       .row {
         display: grid;
-        grid-template-columns: 1fr 140px;
+        grid-template-columns: 1fr 150px;
         gap: 12px;
         align-items: center;
       }
@@ -68,99 +71,140 @@
         padding: 10px 10px;
         border-radius: 10px;
         border: 1px solid var(--border);
-        background: #0f1620;
+        background: rgba(15, 22, 32, 0.95);
         color: var(--text);
         outline: none;
       }
 
-      .kiArea {
-        margin-top: 14px;
-        padding-top: 14px;
-        border-top: 1px solid var(--border);
+      .topStats {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      @media (min-width: 860px) {
+        .topStats {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+      }
+
+      .statBox {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(0,0,0,0.18);
+      }
+
+      .statLabel {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .statValue {
+        margin-top: 4px;
+        font-size: 18px;
+        font-weight: 650;
       }
 
       .kiHeader {
         display: flex;
-        align-items: baseline;
         justify-content: space-between;
+        align-items: baseline;
         gap: 12px;
+        margin-top: 6px;
       }
 
       .kiTitle {
         font-size: 18px;
-        font-weight: 600;
+        font-weight: 650;
       }
 
       .kiNumbers {
-        font-size: 16px;
+        color: var(--muted);
+        font-size: 14px;
       }
 
-      .muted { color: var(--muted); }
-
-      .kiControls {
-        margin-top: 14px;
-        display: grid;
-        grid-template-columns: 64px 1fr 64px;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .circleBtn {
-        width: 56px;
-        height: 56px;
-        border-radius: 999px;
+      .kiBar {
+        margin-top: 12px;
         border: 1px solid var(--border);
-        background: var(--btn);
-        color: var(--text);
-        font-size: 26px;
-        cursor: pointer;
+        border-radius: 14px;
+        padding: 10px;
+        background: rgba(0,0,0,0.18);
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+        gap: 8px;
       }
 
-      .circleBtn:hover { background: var(--btnHover); }
-      .circleBtn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-      .ring {
-        height: 86px;
-        border-radius: 999px;
-        border: 3px solid var(--ring);
+      .kiOrb {
+        width: 44px;
+        height: 44px;
         display: grid;
         place-items: center;
+        border-radius: 12px;
+        overflow: hidden;
       }
 
-      .ringText {
-        font-size: 18px;
-        color: var(--text);
+      .kiOrb img {
+        width: 44px;
+        height: 44px;
+        object-fit: cover;
+        border-radius: 12px;
+        display: block;
       }
 
-      .restControls {
-        margin-top: 14px;
+      .controls {
+        margin-top: 12px;
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+        align-items: center;
       }
 
-      .restBtn {
+      .btn {
         padding: 10px 12px;
         border-radius: 12px;
         border: 1px solid var(--border);
         background: var(--btn);
         color: var(--text);
         cursor: pointer;
+        user-select: none;
       }
 
-      .restBtn:hover { background: var(--btnHover); }
+      .btn:hover { background: var(--btnHover); }
+      .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-      .hint {
-        margin-top: 12px;
+      .btnSmall {
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(0,0,0,0.12);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .btnSmall:hover { background: rgba(255,255,255,0.06); }
+
+      .statusBar {
+        margin-top: 10px;
+        min-height: 18px;
         font-size: 13px;
         color: var(--muted);
       }
 
+      .statusBar.ok { color: var(--ok); }
+      .statusBar.error { color: var(--danger); }
+
       .sectionTitle {
         display: flex;
-        align-items: baseline;
         justify-content: space-between;
+        align-items: baseline;
         gap: 12px;
+      }
+
+      .sectionTitle h2 {
+        margin: 0;
+        font-size: 18px;
       }
 
       .abilityGrid {
@@ -170,7 +214,7 @@
         gap: 10px;
       }
 
-      @media (min-width: 780px) {
+      @media (min-width: 900px) {
         .abilityGrid {
           grid-template-columns: 1fr 1fr;
         }
@@ -180,15 +224,31 @@
         border: 1px solid var(--border);
         border-radius: 14px;
         padding: 12px;
-        background: rgba(0,0,0,0.12);
+        background: rgba(0,0,0,0.18);
         display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 10px;
+        grid-template-columns: 56px 1fr auto;
+        gap: 12px;
         align-items: center;
       }
 
+      .abilityIcon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(0,0,0,0.25);
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .abilityIcon img {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        display: block;
+      }
+
       .abilityName {
-        font-weight: 650;
+        font-weight: 700;
         letter-spacing: 0.2px;
       }
 
@@ -200,54 +260,84 @@
 
       .abilityBtns {
         display: flex;
-        align-items: center;
         gap: 8px;
+        align-items: center;
       }
 
-      .useBtn {
-        padding: 10px 12px;
+      select {
+        padding: 10px 10px;
         border-radius: 12px;
         border: 1px solid var(--border);
-        background: var(--btn);
+        background: rgba(15, 22, 32, 0.95);
         color: var(--text);
-        cursor: pointer;
-        min-width: 92px;
+        outline: none;
       }
 
-      .useBtn:hover { background: var(--btnHover); }
-      .useBtn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-      .infoBtn {
+      .qBtn {
         width: 40px;
         height: 40px;
         border-radius: 999px;
         border: 1px solid var(--border);
-        background: transparent;
+        background: rgba(0,0,0,0.12);
         color: var(--text);
         cursor: pointer;
+        font-weight: 800;
+      }
+
+      .qBtn:hover { background: rgba(255,255,255,0.06); }
+
+      .refList {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      @media (min-width: 900px) {
+        .refList {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .refItem {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(0,0,0,0.18);
+      }
+
+      .refHead {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+      }
+
+      .refName {
         font-weight: 700;
       }
 
-      .infoBtn:hover { background: rgba(255,255,255,0.06); }
-
-      .statusBar {
-        margin-top: 10px;
-        font-size: 13px;
+      .refLevel {
         color: var(--muted);
-        min-height: 18px;
+        font-size: 13px;
+        white-space: nowrap;
       }
 
-      .statusBar.error {
-        color: var(--danger);
+      .refDesc {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+        white-space: pre-wrap;
       }
 
       dialog {
         border: 1px solid var(--border);
         border-radius: 14px;
         padding: 0;
-        background: #0f1620;
+        background: rgba(15, 22, 32, 0.98);
         color: var(--text);
-        max-width: 680px;
+        max-width: 760px;
         width: calc(100% - 24px);
       }
 
@@ -259,8 +349,8 @@
         padding: 14px 14px 10px;
         border-bottom: 1px solid var(--border);
         display: flex;
-        align-items: flex-start;
         justify-content: space-between;
+        align-items: flex-start;
         gap: 12px;
       }
 
@@ -271,49 +361,26 @@
 
       .dlgBody {
         padding: 14px;
-        color: var(--text);
       }
 
       .dlgBody p {
         margin: 0 0 10px;
-        color: var(--text);
-        line-height: 1.45;
+        line-height: 1.5;
+        white-space: pre-wrap;
       }
 
-      .dlgBody .mutedLine {
+      .dlgMeta {
+        margin-top: 8px;
         color: var(--muted);
         font-size: 13px;
       }
 
       .dlgActions {
         padding: 12px 14px 14px;
+        border-top: 1px solid var(--border);
         display: flex;
         justify-content: flex-end;
         gap: 10px;
-        border-top: 1px solid var(--border);
-      }
-
-      .dlgClose {
-        padding: 10px 12px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: var(--btn);
-        color: var(--text);
-        cursor: pointer;
-      }
-
-      .dlgClose:hover { background: var(--btnHover); }
-
-      .abilityBox {
-        width: 100%;
-        margin-top: 10px;
-        padding: 12px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: #0f1620;
-        color: var(--text);
-        resize: vertical;
-        min-height: 120px;
       }
 
       .footer {
@@ -327,75 +394,82 @@
   <body>
     <main class="wrap">
       <header class="header">
-        <h1>Monk Ki Tracker</h1>
-        <p class="sub">Bottom-up build, core Ki and core Ki abilities.</p>
+        <h1>Monk KI Tracker</h1>
+        <p class="sub">Icons, KI orb bar, level-gated KI abilities, plus reference features.</p>
       </header>
 
-      <section class="card" aria-label="Ki tracker">
+      <section class="card" aria-label="Core">
         <div class="row">
           <label for="levelInput" class="label">Monk Level (1 to 20)</label>
           <input id="levelInput" type="number" min="1" max="20" step="1" />
         </div>
 
-        <div class="kiArea">
-          <div class="kiHeader">
-            <div class="kiTitle">Ki</div>
-            <div class="kiNumbers">
-              <span id="kiCurrent">0</span>
-              <span class="muted">/</span>
-              <span id="kiMax">0</span>
-            </div>
+        <div class="topStats">
+          <div class="statBox">
+            <div class="statLabel">KI</div>
+            <div class="statValue" id="kiText">0 / 0</div>
           </div>
-
-          <div class="kiControls">
-            <button id="minusBtn" class="circleBtn" type="button" aria-label="Spend 1 Ki">-</button>
-            <div class="ring" aria-label="Ki ring (visual placeholder)">
-              <div class="ringText" id="ringText">0 / 0</div>
-            </div>
-            <button id="plusBtn" class="circleBtn" type="button" aria-label="Regain 1 Ki">+</button>
+          <div class="statBox">
+            <div class="statLabel">Unarmored Movement Bonus</div>
+            <div class="statValue" id="moveText">-</div>
           </div>
-
-          <div class="restControls">
-            <button id="shortRestBtn" class="restBtn" type="button">Short Rest (refill Ki)</button>
-            <button id="longRestBtn" class="restBtn" type="button">Long Rest (refill Ki)</button>
-          </div>
-
-          <div class="hint">
-            Ki starts at Monk level 2. Level 1 has 0 Ki. Level 2 to 20 has Ki equal to Monk level.
+          <div class="statBox">
+            <div class="statLabel">Martial Arts Die</div>
+            <div class="statValue" id="madText">1d4</div>
           </div>
         </div>
-      </section>
 
-      <section class="card" aria-label="Ki abilities">
-        <div class="sectionTitle">
-          <h2 style="margin:0;">Ki Abilities</h2>
-          <div class="sub muted">Tap Use to spend Ki, tap ? for the definition.</div>
+        <div class="kiHeader">
+          <div class="kiTitle">KI Orbs</div>
+          <div class="kiNumbers">
+            <span class="muted">Using:</span>
+            <span id="uiNames"></span>
+          </div>
         </div>
 
-        <div id="abilityGrid" class="abilityGrid"></div>
+        <div id="kiBar" class="kiBar" aria-label="KI orbs bar"></div>
+
+        <div class="controls">
+          <button id="spend1" class="btn" type="button">Spend 1 KI</button>
+          <button id="gain1" class="btn" type="button">Gain 1 KI</button>
+          <button id="shortRest" class="btn" type="button">Short Rest (refill KI)</button>
+          <button id="longRest" class="btn" type="button">Long Rest (refill KI)</button>
+        </div>
 
         <div id="statusBar" class="statusBar" role="status" aria-live="polite"></div>
       </section>
 
-      <section class="card">
-        <h2 style="margin:0;">Ability Reference Notes</h2>
-        <p class="sub muted">Optional notes area, saved locally.</p>
-        <textarea id="abilityBox" class="abilityBox" spellcheck="false" placeholder="Put notes here..."></textarea>
+      <section class="card" aria-label="KI Abilities">
+        <div class="sectionTitle">
+          <h2>KI Abilities (spend KI)</h2>
+          <div class="sub muted">Only shows abilities you have by level.</div>
+        </div>
+        <div id="abilityGrid" class="abilityGrid"></div>
       </section>
 
-      <footer class="footer">Saved in your browser (localStorage).</footer>
+      <section class="card" aria-label="Reference Features">
+        <div class="sectionTitle">
+          <h2>Reference (no KI cost)</h2>
+          <div class="sub muted">No icons, no spending, just reminders.</div>
+        </div>
+        <div id="refList" class="refList"></div>
+      </section>
+
+      <footer class="footer">
+        Saved in your browser (localStorage).
+      </footer>
 
       <dialog id="infoDialog" aria-label="Ability definition dialog">
         <div class="dlgHead">
           <h3 class="dlgTitle" id="dlgTitle">Ability</h3>
-          <button class="infoBtn" id="dlgX" type="button" aria-label="Close dialog">×</button>
+          <button class="qBtn" id="dlgX" type="button" aria-label="Close dialog">×</button>
         </div>
         <div class="dlgBody">
           <p id="dlgDesc"></p>
-          <div class="mutedLine" id="dlgCost"></div>
+          <div class="dlgMeta" id="dlgMeta"></div>
         </div>
         <div class="dlgActions">
-          <button class="dlgClose" id="dlgClose" type="button">Close</button>
+          <button class="btn" id="dlgClose" type="button">Close</button>
         </div>
       </dialog>
     </main>
@@ -403,260 +477,539 @@
     <script>
       "use strict";
 
-      const STORAGE_KEY = "monk_ki_tracker_v2_ki_abilities";
+      /*
+        Extracted filenames from your screenshots (as requested):
 
-      function clamp(n, min, max) {
-        return Math.max(min, Math.min(max, n));
-      }
+        Icons:
+        - Adaptive_physiology.webp
+        - Chromatophore_Bloom.webp
+        - Extra_arms.webp
+        - Focused_aim.webp
+        - healing_factor.webp
+        - Patient_Defense.webp
+        - Reflexive_Tendril.webp
+        - separation_body_soul.webp
+        - Step_wind.webp
+        - Stunning_strike.webp
 
-      // 5e (2014): Ki starts at level 2 and equals monk level thereafter
-      function getMaxKi(level) {
+        UI:
+        - available_KI.webp
+        - spent_KI.webp
+        - UI_background.webp
+      */
+
+      // If your folders differ, change these two bases only.
+      const PATHS = {
+        iconsBase: "./", // example: "./icons/"
+        uiBase: "./",    // example: "./ui/"
+      };
+
+      const FILES = {
+        uiBackground: "UI_background.webp",
+        kiAvailable: "available_KI.webp",
+        kiSpent: "spent_KI.webp",
+      };
+
+      // Monk KI rules you specified earlier: KI = monk level (0 at level 1), max 20.
+      function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+      function getMaxKI(level) {
         level = Number(level);
         if (!Number.isFinite(level)) return 0;
         if (level <= 1) return 0;
         return clamp(level, 2, 20);
       }
 
-      function calcAbilityBoxMinHeight(level) {
-        const base = 140;
-        const perLevel = 10;
-        const h = base + (clamp(level, 1, 20) - 1) * perLevel;
-        return clamp(h, 140, 340);
-      }
+      // Level tables you provided
+      const UNARMORED_MOVE = [
+        "-", "+10 ft.", "+10 ft.", "+10 ft.", "+10 ft.",
+        "+15 ft.", "+15 ft.", "+15 ft.", "+15 ft.",
+        "+20 ft.", "+20 ft.", "+20 ft.", "+20 ft.",
+        "+25 ft.", "+25 ft.", "+25 ft.", "+25 ft.",
+        "+30 ft.", "+30 ft.", "+30 ft."
+      ]; // index 0 = level 1, index 19 = level 20
 
-      // Core Ki abilities you asked for
+      const MARTIAL_DIE = [
+        "1d4","1d4","1d4","1d4",
+        "1d6","1d6","1d6","1d6","1d6","1d6",
+        "1d8","1d8","1d8","1d8","1d8","1d8",
+        "1d10","1d10","1d10","1d10"
+      ];
+
+      // KI abilities (icon + level gate + cost + definition)
+      // For variable-cost abilities, provide costOptions.
       const KI_ABILITIES = [
         {
-          id: "flurry_of_blows",
-          name: "Flurry of Blows",
+          id: "extra_arms",
+          name: "Extra Arms",
+          icon: "Extra_arms.webp",
+          level: 2,
           cost: 1,
-          desc:
-            "Immediately after you take the Attack action on your turn, you can spend 1 Ki point to make two unarmed strikes as a bonus action.",
+          desc: "Immediately after you take the Attack action on your turn, you can spend 1 ki point to make 4 unarmed strikes as a bonus action.",
         },
         {
           id: "patient_defense",
           name: "Patient Defense",
+          icon: "Patient_Defense.webp",
+          level: 2,
           cost: 1,
-          desc:
-            "You can spend 1 Ki point to take the Dodge action as a bonus action on your turn.",
+          desc: "You can spend 1 ki point to take the Dodge action as a bonus action on your turn.",
         },
         {
           id: "step_of_the_wind",
           name: "Step of the Wind",
+          icon: "Step_wind.webp",
+          level: 2,
+          cost: 1,
+          desc: "You can spend 1 ki point to take the Disengage or Dash action as a bonus action on your turn, and your jump distance is doubled for the turn.",
+        },
+        {
+          id: "reflexive_tendril",
+          name: "Reflexive Tendril",
+          icon: "Reflexive_Tendril.webp",
+          level: 3,
           cost: 1,
           desc:
-            "You can spend 1 Ki point to take the Disengage or Dash action as a bonus action on your turn, and your jump distance is doubled for the turn.",
+`You can use your reaction to deflect or catch the missile when you are hit by a ranged weapon attack. When you do so, the damage you take from the attack is reduced by 1d10 + your Dexterity modifier + your monk level.
+
+If you reduce the damage to 0, you can catch the missile if it is small enough for you to hold in one hand and you have at least one hand free. If you catch a missile in this way, you can spend 1 ki point to make a ranged attack with a range of 20/60 using the weapon or piece of ammunition you just caught, as part of the same reaction. You make this attack with proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack.`,
+        },
+        {
+          id: "stunning_strike",
+          name: "Stunning Strike",
+          icon: "Stunning_strike.webp",
+          level: 5,
+          cost: 1,
+          desc:
+            "You interfere with the flow of ki in an opponent's body. When you hit another creature with a melee weapon attack, you can spend 1 ki point to attempt a stunning strike. The target must succeed on a Constitution saving throw or be stunned until the end of your next turn.",
+        },
+        {
+          id: "focused_aim",
+          name: "Focused Aim",
+          icon: "Focused_aim.webp",
+          level: 5,
+          costOptions: [1, 2, 3],
+          desc:
+            "When you miss with an attack roll, you can spend 1 to 3 ki points to increase your attack roll by 2 for each of these ki points you spend, potentially turning the miss into a hit.",
+        },
+        {
+          id: "adaptive_physiology",
+          name: "Adaptive Physiology",
+          icon: "Adaptive_physiology.webp",
+          level: 14,
+          cost: 1,
+          desc:
+`This grants you proficiency in all saving throws.
+
+Additionally, whenever you make a saving throw and fail, you can spend 1 ki point to reroll it and take the second result.`,
+        },
+        {
+          id: "chromatophore_bloom",
+          name: "Chromatophore Bloom",
+          icon: "Chromatophore_Bloom.webp",
+          level: 18,
+          cost: 4,
+          desc:
+            "You can use your action to spend 4 ki points to become invisible for 1 minute. During that time, you also have resistance to all damage but force damage.",
+        },
+        {
+          id: "separation_body_soul",
+          name: "Separation of Body and Soul",
+          icon: "separation_body_soul.webp",
+          level: 18,
+          cost: 8,
+          desc:
+            "You can spend 8 ki points to cast the astral projection spell, without needing material components. When you do so, you can't take any other creatures with you.",
         },
       ];
 
+      // Reference features (no KI cost, no icons)
+      const REF_FEATURES = [
+        {
+          level: 2,
+          name: "Unarmored Movement (feature reminder)",
+          desc:
+`Your speed increases by 10 feet while you are not wearing armor or wielding a shield. This bonus increases when you reach certain monk levels, as shown in the Monk table.
+
+At 9th level, you gain the ability to move along vertical surfaces and across liquids on your turn without falling during the move.`,
+        },
+        {
+          level: 4,
+          name: "Adaptive Landing Reflex",
+          desc:
+            "You can use your reaction when you fall to reduce any falling damage you take by an amount equal to five times your monk level.",
+        },
+        {
+          level: 5,
+          name: "Extra Attack",
+          desc:
+            "Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn.",
+        },
+        {
+          level: 7,
+          name: "Evasion",
+          desc:
+            "When you are subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.",
+        },
+        {
+          level: 7,
+          name: "Stillness of Mind",
+          desc:
+            "You can use your action to end one effect on yourself that is causing you to be charmed or frightened.",
+        },
+        {
+          level: 10,
+          name: "Purity of Body",
+          desc:
+            "Your mastery of the ki flowing through you makes you immune to disease and poison.",
+        },
+        {
+          level: 13,
+          name: "Tongue of the Sun and Moon",
+          desc:
+            "You understand all spoken languages. Moreover, any creature that can understand a language can understand what you say.",
+        },
+        {
+          level: 15,
+          name: "Timeless Body",
+          desc:
+            "You suffer none of the frailty of old age, and you can't be aged magically. You can still die of old age. In addition, you no longer need food or water.",
+        },
+        {
+          level: 20,
+          name: "Perfect Self",
+          desc:
+            "When you roll for initiative and have no ki points remaining, you regain 4 ki points.",
+        },
+      ];
+
+      // Storage
+      const STORAGE_KEY = "monk_ki_tracker_v3_icons_level_gated";
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return { level: 2, ki: 2, notes: "" };
+          if (!raw) return { level: 2, ki: 2 };
           const parsed = JSON.parse(raw);
           return {
             level: clamp(Number(parsed.level) || 2, 1, 20),
             ki: Math.max(0, Number(parsed.ki) || 0),
-            notes: typeof parsed.notes === "string" ? parsed.notes : "",
           };
         } catch {
-          return { level: 2, ki: 2, notes: "" };
+          return { level: 2, ki: 2 };
         }
       }
-
-      function saveState(state) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      function saveState(s) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
       }
 
       const el = {};
       let state = loadState();
 
-      function normalizeState() {
-        state.level = clamp(Number(state.level) || 1, 1, 20);
-        const maxKi = getMaxKi(state.level);
-        state.ki = clamp(Number(state.ki) || 0, 0, maxKi);
-        if (typeof state.notes !== "string") state.notes = "";
-      }
-
-      function setStatus(msg, isError = false) {
+      function setStatus(msg, kind = "") {
         el.statusBar.textContent = msg || "";
-        el.statusBar.classList.toggle("error", Boolean(isError));
+        el.statusBar.classList.remove("ok", "error");
+        if (kind) el.statusBar.classList.add(kind);
       }
 
-      function openInfo(ability) {
-        el.dlgTitle.textContent = ability.name;
-        el.dlgDesc.textContent = ability.desc;
-        el.dlgCost.textContent = `Ki cost: ${ability.cost}`;
-        if (typeof el.infoDialog.showModal === "function") {
-          el.infoDialog.showModal();
-        } else {
-          alert(`${ability.name}\n\n${ability.desc}\n\nKi cost: ${ability.cost}`);
+      function normalize() {
+        state.level = clamp(Number(state.level) || 1, 1, 20);
+        const max = getMaxKI(state.level);
+        state.ki = clamp(Number(state.ki) || 0, 0, max);
+      }
+
+      function setBackground() {
+        const bgUrl = `${PATHS.uiBase}${FILES.uiBackground}`;
+        document.body.style.backgroundImage = `url("${bgUrl}")`;
+        document.body.style.backgroundRepeat = "no-repeat";
+        document.body.style.backgroundPosition = "center top";
+        document.body.style.backgroundAttachment = "fixed";
+        document.body.style.backgroundSize = "cover";
+      }
+
+      function renderTopStats() {
+        const max = getMaxKI(state.level);
+        el.kiText.textContent = `${state.ki} / ${max}`;
+
+        const idx = clamp(state.level, 1, 20) - 1;
+        el.moveText.textContent = UNARMORED_MOVE[idx] || "-";
+        el.madText.textContent = MARTIAL_DIE[idx] || "1d4";
+      }
+
+      function renderKIBar() {
+        const max = getMaxKI(state.level);
+        el.kiBar.innerHTML = "";
+
+        const availSrc = `${PATHS.uiBase}${FILES.kiAvailable}`;
+        const spentSrc = `${PATHS.uiBase}${FILES.kiSpent}`;
+
+        for (let i = 1; i <= max; i++) {
+          const orb = document.createElement("div");
+          orb.className = "kiOrb";
+          const img = document.createElement("img");
+          img.alt = i <= state.ki ? "KI available" : "KI spent";
+          img.src = i <= state.ki ? availSrc : spentSrc;
+          orb.appendChild(img);
+          el.kiBar.appendChild(orb);
         }
+
+        el.spend1.disabled = state.ki <= 0;
+        el.gain1.disabled = state.ki >= max;
       }
 
-      function spendKi(amount) {
-        normalizeState();
+      function openDialog(title, desc, meta) {
+        el.dlgTitle.textContent = title;
+        el.dlgDesc.textContent = desc;
+        el.dlgMeta.textContent = meta || "";
+        if (typeof el.infoDialog.showModal === "function") el.infoDialog.showModal();
+        else alert(`${title}\n\n${desc}\n\n${meta || ""}`);
+      }
+
+      function spendKI(amount) {
+        normalize();
+        amount = Number(amount) || 0;
         if (amount <= 0) return true;
         if (state.ki < amount) return false;
         state.ki -= amount;
         return true;
       }
 
-      function refillKi() {
-        const maxKi = getMaxKi(state.level);
-        state.ki = maxKi;
+      function refillKI() {
+        const max = getMaxKI(state.level);
+        state.ki = max;
+        saveState(state);
         render();
-        setStatus("Ki refilled.");
+        setStatus("KI refilled.", "ok");
       }
 
-      function buildAbilityGrid() {
+      function renderAbilities() {
         el.abilityGrid.innerHTML = "";
 
-        for (const ability of KI_ABILITIES) {
+        const max = getMaxKI(state.level);
+        const availableAbilities = KI_ABILITIES.filter(a => state.level >= a.level);
+
+        if (availableAbilities.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "sub muted";
+          empty.textContent = "No KI abilities available yet (set level to 2+).";
+          el.abilityGrid.appendChild(empty);
+          return;
+        }
+
+        for (const a of availableAbilities) {
           const card = document.createElement("div");
           card.className = "abilityCard";
 
-          const left = document.createElement("div");
-          const title = document.createElement("div");
-          title.className = "abilityName";
-          title.textContent = ability.name;
+          const iconWrap = document.createElement("div");
+          iconWrap.className = "abilityIcon";
+          const img = document.createElement("img");
+          img.src = `${PATHS.iconsBase}${a.icon}`;
+          img.alt = `${a.name} icon`;
+          iconWrap.appendChild(img);
+
+          const mid = document.createElement("div");
+          const name = document.createElement("div");
+          name.className = "abilityName";
+          name.textContent = a.name;
 
           const meta = document.createElement("div");
           meta.className = "abilityMeta";
-          meta.textContent = `Cost: ${ability.cost} Ki`;
 
-          left.appendChild(title);
-          left.appendChild(meta);
+          const costText =
+            a.costOptions ? `Cost: ${a.costOptions[0]} to ${a.costOptions[a.costOptions.length - 1]} KI` : `Cost: ${a.cost} KI`;
+          meta.textContent = `Unlocked at level ${a.level}. ${costText}.`;
+
+          mid.appendChild(name);
+          mid.appendChild(meta);
 
           const btns = document.createElement("div");
           btns.className = "abilityBtns";
 
+          let costPicker = null;
+          if (a.costOptions && Array.isArray(a.costOptions)) {
+            costPicker = document.createElement("select");
+            costPicker.setAttribute("aria-label", `Choose KI cost for ${a.name}`);
+            for (const c of a.costOptions) {
+              const opt = document.createElement("option");
+              opt.value = String(c);
+              opt.textContent = `${c} KI`;
+              costPicker.appendChild(opt);
+            }
+            btns.appendChild(costPicker);
+          }
+
           const useBtn = document.createElement("button");
-          useBtn.className = "useBtn";
+          useBtn.className = "btn";
           useBtn.type = "button";
           useBtn.textContent = "Use";
+          useBtn.disabled = max === 0;
+
           useBtn.addEventListener("click", () => {
-            const ok = spendKi(ability.cost);
+            const amt = a.costOptions ? Number(costPicker.value) : Number(a.cost);
+            const ok = spendKI(amt);
+
             if (!ok) {
-              setStatus(`Not enough Ki to use ${ability.name}.`, true);
+              setStatus(`Not enough KI to use ${a.name} (need ${amt}).`, "error");
               render();
               return;
             }
-            setStatus(`${ability.name} used, spent ${ability.cost} Ki.`);
+
+            saveState(state);
             render();
+            setStatus(`${a.name} used, spent ${amt} KI.`, "ok");
           });
 
-          const infoBtn = document.createElement("button");
-          infoBtn.className = "infoBtn";
-          infoBtn.type = "button";
-          infoBtn.textContent = "?";
-          infoBtn.setAttribute("aria-label", `Show definition for ${ability.name}`);
-          infoBtn.addEventListener("click", () => openInfo(ability));
+          const q = document.createElement("button");
+          q.className = "qBtn";
+          q.type = "button";
+          q.textContent = "?";
+          q.setAttribute("aria-label", `Show definition for ${a.name}`);
+          q.addEventListener("click", () => {
+            const metaLine = a.costOptions
+              ? `Unlocked: level ${a.level}. Cost: ${a.costOptions[0]} to ${a.costOptions[a.costOptions.length - 1]} KI.`
+              : `Unlocked: level ${a.level}. Cost: ${a.cost} KI.`;
+            openDialog(a.name, a.desc, metaLine);
+          });
 
           btns.appendChild(useBtn);
-          btns.appendChild(infoBtn);
+          btns.appendChild(q);
 
-          card.appendChild(left);
+          card.appendChild(iconWrap);
+          card.appendChild(mid);
           card.appendChild(btns);
 
           el.abilityGrid.appendChild(card);
         }
+
+        // Disable Use buttons when not enough KI
+        const useButtons = el.abilityGrid.querySelectorAll("button.btn");
+        let i = 0;
+        for (const a of availableAbilities) {
+          const btn = useButtons[i++];
+          if (!btn) continue;
+          const minCost = a.costOptions ? Math.min(...a.costOptions) : a.cost;
+          btn.disabled = state.ki < minCost || max === 0;
+        }
+      }
+
+      function renderReference() {
+        el.refList.innerHTML = "";
+        const available = REF_FEATURES.filter(r => state.level >= r.level);
+
+        if (available.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "sub muted";
+          empty.textContent = "No reference features shown at this level.";
+          el.refList.appendChild(empty);
+          return;
+        }
+
+        for (const r of available) {
+          const box = document.createElement("div");
+          box.className = "refItem";
+
+          const head = document.createElement("div");
+          head.className = "refHead";
+
+          const name = document.createElement("div");
+          name.className = "refName";
+          name.textContent = r.name;
+
+          const lvl = document.createElement("div");
+          lvl.className = "refLevel";
+          lvl.textContent = `Level ${r.level}`;
+
+          head.appendChild(name);
+          head.appendChild(lvl);
+
+          const desc = document.createElement("div");
+          desc.className = "refDesc";
+          desc.textContent = r.desc;
+
+          box.appendChild(head);
+          box.appendChild(desc);
+
+          el.refList.appendChild(box);
+        }
       }
 
       function render() {
-        normalizeState();
-
-        const maxKi = getMaxKi(state.level);
-
-        el.levelInput.value = String(state.level);
-        el.kiCurrent.textContent = String(state.ki);
-        el.kiMax.textContent = String(maxKi);
-        el.ringText.textContent = `${state.ki} / ${maxKi}`;
-
-        el.minusBtn.disabled = state.ki <= 0;
-        el.plusBtn.disabled = state.ki >= maxKi;
-
-        // Disable "Use" buttons if not enough Ki or no Ki pool yet
-        const useButtons = el.abilityGrid.querySelectorAll(".useBtn");
-        KI_ABILITIES.forEach((a, idx) => {
-          const btn = useButtons[idx];
-          if (!btn) return;
-          btn.disabled = state.ki < a.cost || maxKi === 0;
-        });
-
-        el.abilityBox.style.minHeight = `${calcAbilityBoxMinHeight(state.level)}px`;
-
-        saveState(state);
+        normalize();
+        renderTopStats();
+        renderKIBar();
+        renderAbilities();
+        renderReference();
       }
 
       function init() {
         el.levelInput = document.getElementById("levelInput");
-        el.kiCurrent = document.getElementById("kiCurrent");
-        el.kiMax = document.getElementById("kiMax");
-        el.ringText = document.getElementById("ringText");
-        el.minusBtn = document.getElementById("minusBtn");
-        el.plusBtn = document.getElementById("plusBtn");
-        el.shortRestBtn = document.getElementById("shortRestBtn");
-        el.longRestBtn = document.getElementById("longRestBtn");
-        el.abilityBox = document.getElementById("abilityBox");
-        el.abilityGrid = document.getElementById("abilityGrid");
+        el.kiText = document.getElementById("kiText");
+        el.moveText = document.getElementById("moveText");
+        el.madText = document.getElementById("madText");
+        el.kiBar = document.getElementById("kiBar");
+        el.spend1 = document.getElementById("spend1");
+        el.gain1 = document.getElementById("gain1");
+        el.shortRest = document.getElementById("shortRest");
+        el.longRest = document.getElementById("longRest");
         el.statusBar = document.getElementById("statusBar");
+        el.abilityGrid = document.getElementById("abilityGrid");
+        el.refList = document.getElementById("refList");
+
+        el.uiNames = document.getElementById("uiNames");
+        el.uiNames.textContent = `${FILES.kiAvailable}, ${FILES.kiSpent}, ${FILES.uiBackground}`;
 
         el.infoDialog = document.getElementById("infoDialog");
         el.dlgTitle = document.getElementById("dlgTitle");
         el.dlgDesc = document.getElementById("dlgDesc");
-        el.dlgCost = document.getElementById("dlgCost");
+        el.dlgMeta = document.getElementById("dlgMeta");
         el.dlgClose = document.getElementById("dlgClose");
         el.dlgX = document.getElementById("dlgX");
 
-        buildAbilityGrid();
+        setBackground();
 
-        el.abilityBox.value = state.notes || "";
+        el.levelInput.value = String(state.level);
 
         el.levelInput.addEventListener("input", () => {
           const lvl = clamp(Number(el.levelInput.value), 1, 20);
           state.level = Number.isFinite(lvl) ? lvl : 1;
 
-          // Clamp current Ki to new maximum immediately
-          const newMax = getMaxKi(state.level);
+          const newMax = getMaxKI(state.level);
           state.ki = clamp(state.ki, 0, newMax);
 
-          setStatus("");
-          render();
-        });
-
-        el.minusBtn.addEventListener("click", () => {
-          state.ki = Math.max(0, state.ki - 1);
-          setStatus("");
-          render();
-        });
-
-        el.plusBtn.addEventListener("click", () => {
-          const maxKi = getMaxKi(state.level);
-          state.ki = Math.min(maxKi, state.ki + 1);
-          setStatus("");
-          render();
-        });
-
-        el.shortRestBtn.addEventListener("click", refillKi);
-        el.longRestBtn.addEventListener("click", refillKi);
-
-        el.abilityBox.addEventListener("input", () => {
-          state.notes = el.abilityBox.value;
           saveState(state);
+          setStatus("");
+          render();
         });
+
+        el.spend1.addEventListener("click", () => {
+          if (!spendKI(1)) {
+            setStatus("Not enough KI to spend 1.", "error");
+            render();
+            return;
+          }
+          saveState(state);
+          render();
+          setStatus("Spent 1 KI.", "ok");
+        });
+
+        el.gain1.addEventListener("click", () => {
+          const max = getMaxKI(state.level);
+          state.ki = clamp(state.ki + 1, 0, max);
+          saveState(state);
+          render();
+          setStatus("Gained 1 KI.", "ok");
+        });
+
+        el.shortRest.addEventListener("click", refillKI);
+        el.longRest.addEventListener("click", refillKI);
 
         el.dlgClose.addEventListener("click", () => el.infoDialog.close());
         el.dlgX.addEventListener("click", () => el.infoDialog.close());
+
         el.infoDialog.addEventListener("click", (e) => {
-          // Click outside the dialog content closes it
           const rect = el.infoDialog.getBoundingClientRect();
-          const inDialog =
-            e.clientX >= rect.left &&
-            e.clientX <= rect.right &&
-            e.clientY >= rect.top &&
-            e.clientY <= rect.bottom;
-          if (!inDialog) el.infoDialog.close();
+          const inside =
+            e.clientX >= rect.left && e.clientX <= rect.right &&
+            e.clientY >= rect.top && e.clientY <= rect.bottom;
+          if (!inside) el.infoDialog.close();
         });
 
         render();
