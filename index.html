@@ -40,10 +40,7 @@
         letter-spacing: 0.2px;
       }
 
-      .sub {
-        margin: 0;
-        color: var(--muted);
-      }
+      .sub { margin: 0; color: var(--muted); }
 
       .card {
         margin-top: 14px;
@@ -61,12 +58,9 @@
         align-items: center;
       }
 
-      .label {
-        color: var(--muted);
-        font-size: 14px;
-      }
+      .label { color: var(--muted); font-size: 14px; }
 
-      input[type="number"] {
+      input[type="number"], input[type="text"] {
         width: 100%;
         padding: 10px 10px;
         border-radius: 10px;
@@ -76,17 +70,24 @@
         outline: none;
       }
 
+      .grid2 {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      @media (min-width: 860px) {
+        .grid2 { grid-template-columns: 1fr 1fr; }
+      }
+
       .topStats {
         margin-top: 12px;
         display: grid;
         grid-template-columns: 1fr;
         gap: 10px;
       }
-
       @media (min-width: 860px) {
-        .topStats {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
+        .topStats { grid-template-columns: 1fr 1fr 1fr; }
       }
 
       .statBox {
@@ -95,17 +96,8 @@
         padding: 12px;
         background: rgba(0,0,0,0.18);
       }
-
-      .statLabel {
-        font-size: 12px;
-        color: var(--muted);
-      }
-
-      .statValue {
-        margin-top: 4px;
-        font-size: 18px;
-        font-weight: 650;
-      }
+      .statLabel { font-size: 12px; color: var(--muted); }
+      .statValue { margin-top: 4px; font-size: 18px; font-weight: 650; }
 
       .kiHeader {
         display: flex;
@@ -114,16 +106,8 @@
         gap: 12px;
         margin-top: 6px;
       }
-
-      .kiTitle {
-        font-size: 18px;
-        font-weight: 650;
-      }
-
-      .kiNumbers {
-        color: var(--muted);
-        font-size: 14px;
-      }
+      .kiTitle { font-size: 18px; font-weight: 650; }
+      .kiNumbers { color: var(--muted); font-size: 14px; }
 
       .kiBar {
         margin-top: 12px;
@@ -143,13 +127,14 @@
         place-items: center;
         border-radius: 12px;
         overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(0,0,0,0.25);
       }
 
       .kiOrb img {
         width: 44px;
         height: 44px;
         object-fit: cover;
-        border-radius: 12px;
         display: block;
       }
 
@@ -170,28 +155,28 @@
         cursor: pointer;
         user-select: none;
       }
-
       .btn:hover { background: var(--btnHover); }
       .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-      .btnSmall {
-        padding: 8px 10px;
-        border-radius: 12px;
+      .qBtn {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
         border: 1px solid var(--border);
         background: rgba(0,0,0,0.12);
         color: var(--text);
         cursor: pointer;
+        font-weight: 800;
       }
-
-      .btnSmall:hover { background: rgba(255,255,255,0.06); }
+      .qBtn:hover { background: rgba(255,255,255,0.06); }
 
       .statusBar {
         margin-top: 10px;
         min-height: 18px;
         font-size: 13px;
         color: var(--muted);
+        white-space: pre-wrap;
       }
-
       .statusBar.ok { color: var(--ok); }
       .statusBar.error { color: var(--danger); }
 
@@ -201,11 +186,7 @@
         align-items: baseline;
         gap: 12px;
       }
-
-      .sectionTitle h2 {
-        margin: 0;
-        font-size: 18px;
-      }
+      .sectionTitle h2 { margin: 0; font-size: 18px; }
 
       .abilityGrid {
         margin-top: 12px;
@@ -213,11 +194,8 @@
         grid-template-columns: 1fr;
         gap: 10px;
       }
-
       @media (min-width: 900px) {
-        .abilityGrid {
-          grid-template-columns: 1fr 1fr;
-        }
+        .abilityGrid { grid-template-columns: 1fr 1fr; }
       }
 
       .abilityCard {
@@ -238,8 +216,9 @@
         overflow: hidden;
         background: rgba(0,0,0,0.25);
         border: 1px solid rgba(255,255,255,0.06);
+        display: grid;
+        place-items: center;
       }
-
       .abilityIcon img {
         width: 56px;
         height: 56px;
@@ -247,22 +226,18 @@
         display: block;
       }
 
-      .abilityName {
-        font-weight: 700;
-        letter-spacing: 0.2px;
-      }
-
-      .abilityMeta {
-        margin-top: 4px;
-        font-size: 13px;
+      .missingIcon {
+        font-size: 11px;
         color: var(--muted);
+        padding: 6px;
+        text-align: center;
+        line-height: 1.2;
       }
 
-      .abilityBtns {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
+      .abilityName { font-weight: 700; letter-spacing: 0.2px; }
+      .abilityMeta { margin-top: 4px; font-size: 13px; color: var(--muted); }
+
+      .abilityBtns { display: flex; gap: 8px; align-items: center; }
 
       select {
         padding: 10px 10px;
@@ -273,30 +248,14 @@
         outline: none;
       }
 
-      .qBtn {
-        width: 40px;
-        height: 40px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: rgba(0,0,0,0.12);
-        color: var(--text);
-        cursor: pointer;
-        font-weight: 800;
-      }
-
-      .qBtn:hover { background: rgba(255,255,255,0.06); }
-
       .refList {
         margin-top: 12px;
         display: grid;
         grid-template-columns: 1fr;
         gap: 10px;
       }
-
       @media (min-width: 900px) {
-        .refList {
-          grid-template-columns: 1fr 1fr;
-        }
+        .refList { grid-template-columns: 1fr 1fr; }
       }
 
       .refItem {
@@ -312,17 +271,8 @@
         gap: 12px;
         align-items: baseline;
       }
-
-      .refName {
-        font-weight: 700;
-      }
-
-      .refLevel {
-        color: var(--muted);
-        font-size: 13px;
-        white-space: nowrap;
-      }
-
+      .refName { font-weight: 700; }
+      .refLevel { color: var(--muted); font-size: 13px; white-space: nowrap; }
       .refDesc {
         margin-top: 6px;
         color: var(--muted);
@@ -340,10 +290,7 @@
         max-width: 760px;
         width: calc(100% - 24px);
       }
-
-      dialog::backdrop {
-        background: rgba(0,0,0,0.65);
-      }
+      dialog::backdrop { background: rgba(0,0,0,0.65); }
 
       .dlgHead {
         padding: 14px 14px 10px;
@@ -353,27 +300,11 @@
         align-items: flex-start;
         gap: 12px;
       }
+      .dlgTitle { margin: 0; font-size: 18px; }
 
-      .dlgTitle {
-        margin: 0;
-        font-size: 18px;
-      }
-
-      .dlgBody {
-        padding: 14px;
-      }
-
-      .dlgBody p {
-        margin: 0 0 10px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-      }
-
-      .dlgMeta {
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 13px;
-      }
+      .dlgBody { padding: 14px; }
+      .dlgBody p { margin: 0 0 10px; line-height: 1.5; white-space: pre-wrap; }
+      .dlgMeta { margin-top: 8px; color: var(--muted); font-size: 13px; }
 
       .dlgActions {
         padding: 12px 14px 14px;
@@ -381,6 +312,14 @@
         display: flex;
         justify-content: flex-end;
         gap: 10px;
+      }
+
+      .tiny { font-size: 12px; color: var(--muted); }
+      code.inline {
+        padding: 2px 6px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        background: rgba(0,0,0,0.25);
       }
 
       .footer {
@@ -395,8 +334,40 @@
     <main class="wrap">
       <header class="header">
         <h1>Monk KI Tracker</h1>
-        <p class="sub">Icons, KI orb bar, level-gated KI abilities, plus reference features.</p>
+        <p class="sub">Fixing image linking, configurable folders, and auto-fallback filename variants.</p>
       </header>
+
+      <section class="card" aria-label="Asset paths">
+        <div class="sectionTitle">
+          <h2>Asset Paths</h2>
+          <div class="sub muted">If images do not show, set these folders.</div>
+        </div>
+
+        <div class="grid2">
+          <div>
+            <div class="label">Icons folder (example: <code class="inline">icons/</code> or <code class="inline">assets/icons/</code>)</div>
+            <input id="iconsBaseInput" type="text" placeholder="icons/" />
+          </div>
+          <div>
+            <div class="label">UI folder (example: <code class="inline">ui/</code> or <code class="inline">assets/ui/</code>)</div>
+            <input id="uiBaseInput" type="text" placeholder="ui/" />
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="applyPathsBtn" class="btn" type="button">Apply Paths</button>
+          <button id="autoDetectBtn" class="btn" type="button">Auto-detect folders</button>
+          <button id="resetPathsBtn" class="btn" type="button">Reset paths</button>
+        </div>
+
+        <div class="tiny">
+          Notes:
+          <div>1) GitHub Pages is case-sensitive. <code class="inline">Step_wind.webp</code> is different from <code class="inline">step_wind.webp</code>.</div>
+          <div>2) Your UI background file in the screenshot looks like it might be <code class="inline">UI background.webp</code> (with a space). This page tries both space and underscore versions automatically.</div>
+        </div>
+
+        <div id="assetStatus" class="statusBar"></div>
+      </section>
 
       <section class="card" aria-label="Core">
         <div class="row">
@@ -422,8 +393,8 @@
         <div class="kiHeader">
           <div class="kiTitle">KI Orbs</div>
           <div class="kiNumbers">
-            <span class="muted">Using:</span>
-            <span id="uiNames"></span>
+            <span class="muted">Available:</span> <code class="inline">available_KI.webp</code>,
+            <span class="muted">Spent:</span> <code class="inline">spent_KI.webp</code>
           </div>
         </div>
 
@@ -455,9 +426,7 @@
         <div id="refList" class="refList"></div>
       </section>
 
-      <footer class="footer">
-        Saved in your browser (localStorage).
-      </footer>
+      <footer class="footer">Saved in your browser (localStorage).</footer>
 
       <dialog id="infoDialog" aria-label="Ability definition dialog">
         <div class="dlgHead">
@@ -478,7 +447,7 @@
       "use strict";
 
       /*
-        Extracted filenames from your screenshots (as requested):
+        Filenames extracted from your screenshots:
 
         Icons:
         - Adaptive_physiology.webp
@@ -495,22 +464,14 @@
         UI:
         - available_KI.webp
         - spent_KI.webp
-        - UI_background.webp
+        - UI background.webp   (likely, with a space)
+          also tries: UI_background.webp
+          also tries: UI_background.webP, UI background.webP (rare, but safe)
       */
 
-      // If your folders differ, change these two bases only.
-      const PATHS = {
-        iconsBase: "./", // example: "./icons/"
-        uiBase: "./",    // example: "./ui/"
-      };
+      const STORAGE_KEY = "monk_ki_tracker_v4_assets_autofix";
+      const PATHS_KEY = "monk_ki_paths_v1";
 
-      const FILES = {
-        uiBackground: "UI_background.webp",
-        kiAvailable: "available_KI.webp",
-        kiSpent: "spent_KI.webp",
-      };
-
-      // Monk KI rules you specified earlier: KI = monk level (0 at level 1), max 20.
       function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
       function getMaxKI(level) {
         level = Number(level);
@@ -526,8 +487,7 @@
         "+20 ft.", "+20 ft.", "+20 ft.", "+20 ft.",
         "+25 ft.", "+25 ft.", "+25 ft.", "+25 ft.",
         "+30 ft.", "+30 ft.", "+30 ft."
-      ]; // index 0 = level 1, index 19 = level 20
-
+      ];
       const MARTIAL_DIE = [
         "1d4","1d4","1d4","1d4",
         "1d6","1d6","1d6","1d6","1d6","1d6",
@@ -535,155 +495,76 @@
         "1d10","1d10","1d10","1d10"
       ];
 
-      // KI abilities (icon + level gate + cost + definition)
-      // For variable-cost abilities, provide costOptions.
+      // Asset filenames
+      const FILES = {
+        uiBackgroundCandidates: ["UI background.webp", "UI_background.webp", "UI background.webP", "UI_background.webP"],
+        kiAvailable: "available_KI.webp",
+        kiSpent: "spent_KI.webp",
+      };
+
+      // Default candidate folders for auto-detect
+      const FOLDER_CANDIDATES = {
+        icons: ["./", "./icons/", "./Icons/", "./assets/icons/", "./assets/Icons/", "./img/icons/", "./images/icons/"],
+        ui: ["./", "./ui/", "./UI/", "./assets/ui/", "./assets/UI/", "./img/ui/", "./images/ui/"],
+      };
+
+      // KI abilities (level-gated)
       const KI_ABILITIES = [
-        {
-          id: "extra_arms",
-          name: "Extra Arms",
-          icon: "Extra_arms.webp",
-          level: 2,
-          cost: 1,
-          desc: "Immediately after you take the Attack action on your turn, you can spend 1 ki point to make 4 unarmed strikes as a bonus action.",
-        },
-        {
-          id: "patient_defense",
-          name: "Patient Defense",
-          icon: "Patient_Defense.webp",
-          level: 2,
-          cost: 1,
-          desc: "You can spend 1 ki point to take the Dodge action as a bonus action on your turn.",
-        },
-        {
-          id: "step_of_the_wind",
-          name: "Step of the Wind",
-          icon: "Step_wind.webp",
-          level: 2,
-          cost: 1,
-          desc: "You can spend 1 ki point to take the Disengage or Dash action as a bonus action on your turn, and your jump distance is doubled for the turn.",
-        },
-        {
-          id: "reflexive_tendril",
-          name: "Reflexive Tendril",
-          icon: "Reflexive_Tendril.webp",
-          level: 3,
-          cost: 1,
+        { id: "extra_arms", name: "Extra Arms", icon: "Extra_arms.webp", level: 2, cost: 1,
+          desc: "Immediately after you take the Attack action on your turn, you can spend 1 ki point to make 4 unarmed strikes as a bonus action." },
+        { id: "patient_defense", name: "Patient Defense", icon: "Patient_Defense.webp", level: 2, cost: 1,
+          desc: "You can spend 1 ki point to take the Dodge action as a bonus action on your turn." },
+        { id: "step_of_the_wind", name: "Step of the Wind", icon: "Step_wind.webp", level: 2, cost: 1,
+          desc: "You can spend 1 ki point to take the Disengage or Dash action as a bonus action on your turn, and your jump distance is doubled for the turn." },
+        { id: "reflexive_tendril", name: "Reflexive Tendril", icon: "Reflexive_Tendril.webp", level: 3, cost: 1,
           desc:
 `You can use your reaction to deflect or catch the missile when you are hit by a ranged weapon attack. When you do so, the damage you take from the attack is reduced by 1d10 + your Dexterity modifier + your monk level.
 
-If you reduce the damage to 0, you can catch the missile if it is small enough for you to hold in one hand and you have at least one hand free. If you catch a missile in this way, you can spend 1 ki point to make a ranged attack with a range of 20/60 using the weapon or piece of ammunition you just caught, as part of the same reaction. You make this attack with proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack.`,
-        },
-        {
-          id: "stunning_strike",
-          name: "Stunning Strike",
-          icon: "Stunning_strike.webp",
-          level: 5,
-          cost: 1,
-          desc:
-            "You interfere with the flow of ki in an opponent's body. When you hit another creature with a melee weapon attack, you can spend 1 ki point to attempt a stunning strike. The target must succeed on a Constitution saving throw or be stunned until the end of your next turn.",
-        },
-        {
-          id: "focused_aim",
-          name: "Focused Aim",
-          icon: "Focused_aim.webp",
-          level: 5,
-          costOptions: [1, 2, 3],
-          desc:
-            "When you miss with an attack roll, you can spend 1 to 3 ki points to increase your attack roll by 2 for each of these ki points you spend, potentially turning the miss into a hit.",
-        },
-        {
-          id: "adaptive_physiology",
-          name: "Adaptive Physiology",
-          icon: "Adaptive_physiology.webp",
-          level: 14,
-          cost: 1,
+If you reduce the damage to 0, you can catch the missile if it is small enough for you to hold in one hand and you have at least one hand free. If you catch a missile in this way, you can spend 1 ki point to make a ranged attack with a range of 20/60 using the weapon or piece of ammunition you just caught, as part of the same reaction. You make this attack with proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack.` },
+        { id: "stunning_strike", name: "Stunning Strike", icon: "Stunning_strike.webp", level: 5, cost: 1,
+          desc: "You interfere with the flow of ki in an opponent's body. When you hit another creature with a melee weapon attack, you can spend 1 ki point to attempt a stunning strike. The target must succeed on a Constitution saving throw or be stunned until the end of your next turn." },
+        { id: "focused_aim", name: "Focused Aim", icon: "Focused_aim.webp", level: 5, costOptions: [1,2,3],
+          desc: "When you miss with an attack roll, you can spend 1 to 3 ki points to increase your attack roll by 2 for each of these ki points you spend, potentially turning the miss into a hit." },
+        { id: "adaptive_physiology", name: "Adaptive Physiology", icon: "Adaptive_physiology.webp", level: 14, cost: 1,
           desc:
 `This grants you proficiency in all saving throws.
 
-Additionally, whenever you make a saving throw and fail, you can spend 1 ki point to reroll it and take the second result.`,
-        },
-        {
-          id: "chromatophore_bloom",
-          name: "Chromatophore Bloom",
-          icon: "Chromatophore_Bloom.webp",
-          level: 18,
-          cost: 4,
-          desc:
-            "You can use your action to spend 4 ki points to become invisible for 1 minute. During that time, you also have resistance to all damage but force damage.",
-        },
-        {
-          id: "separation_body_soul",
-          name: "Separation of Body and Soul",
-          icon: "separation_body_soul.webp",
-          level: 18,
-          cost: 8,
-          desc:
-            "You can spend 8 ki points to cast the astral projection spell, without needing material components. When you do so, you can't take any other creatures with you.",
-        },
+Additionally, whenever you make a saving throw and fail, you can spend 1 ki point to reroll it and take the second result.` },
+        { id: "chromatophore_bloom", name: "Chromatophore Bloom", icon: "Chromatophore_Bloom.webp", level: 18, cost: 4,
+          desc: "You can use your action to spend 4 ki points to become invisible for 1 minute. During that time, you also have resistance to all damage but force damage." },
+        { id: "separation_body_soul", name: "Separation of Body and Soul", icon: "separation_body_soul.webp", level: 18, cost: 8,
+          desc: "You can spend 8 ki points to cast the astral projection spell, without needing material components. When you do so, you can't take any other creatures with you." },
       ];
 
-      // Reference features (no KI cost, no icons)
       const REF_FEATURES = [
-        {
-          level: 2,
-          name: "Unarmored Movement (feature reminder)",
+        { level: 2, name: "Unarmored Movement (feature reminder)",
           desc:
 `Your speed increases by 10 feet while you are not wearing armor or wielding a shield. This bonus increases when you reach certain monk levels, as shown in the Monk table.
 
-At 9th level, you gain the ability to move along vertical surfaces and across liquids on your turn without falling during the move.`,
-        },
-        {
-          level: 4,
-          name: "Adaptive Landing Reflex",
-          desc:
-            "You can use your reaction when you fall to reduce any falling damage you take by an amount equal to five times your monk level.",
-        },
-        {
-          level: 5,
-          name: "Extra Attack",
-          desc:
-            "Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn.",
-        },
-        {
-          level: 7,
-          name: "Evasion",
-          desc:
-            "When you are subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.",
-        },
-        {
-          level: 7,
-          name: "Stillness of Mind",
-          desc:
-            "You can use your action to end one effect on yourself that is causing you to be charmed or frightened.",
-        },
-        {
-          level: 10,
-          name: "Purity of Body",
-          desc:
-            "Your mastery of the ki flowing through you makes you immune to disease and poison.",
-        },
-        {
-          level: 13,
-          name: "Tongue of the Sun and Moon",
-          desc:
-            "You understand all spoken languages. Moreover, any creature that can understand a language can understand what you say.",
-        },
-        {
-          level: 15,
-          name: "Timeless Body",
-          desc:
-            "You suffer none of the frailty of old age, and you can't be aged magically. You can still die of old age. In addition, you no longer need food or water.",
-        },
-        {
-          level: 20,
-          name: "Perfect Self",
-          desc:
-            "When you roll for initiative and have no ki points remaining, you regain 4 ki points.",
-        },
+At 9th level, you gain the ability to move along vertical surfaces and across liquids on your turn without falling during the move.` },
+        { level: 4, name: "Adaptive Landing Reflex",
+          desc: "You can use your reaction when you fall to reduce any falling damage you take by an amount equal to five times your monk level." },
+        { level: 5, name: "Extra Attack",
+          desc: "Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn." },
+        { level: 7, name: "Evasion",
+          desc: "When you are subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail." },
+        { level: 7, name: "Stillness of Mind",
+          desc: "You can use your action to end one effect on yourself that is causing you to be charmed or frightened." },
+        { level: 10, name: "Purity of Body",
+          desc: "Your mastery of the ki flowing through you makes you immune to disease and poison." },
+        { level: 13, name: "Tongue of the Sun and Moon",
+          desc: "You understand all spoken languages. Moreover, any creature that can understand a language can understand what you say." },
+        { level: 15, name: "Timeless Body",
+          desc: "You suffer none of the frailty of old age, and you can't be aged magically. You can still die of old age. In addition, you no longer need food or water." },
+        { level: 20, name: "Perfect Self",
+          desc: "When you roll for initiative and have no ki points remaining, you regain 4 ki points." },
       ];
 
-      // Storage
-      const STORAGE_KEY = "monk_ki_tracker_v3_icons_level_gated";
+      // DOM
+      const el = {};
+      let state = loadState();
+      let paths = loadPaths();
+
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -701,13 +582,29 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
       }
 
-      const el = {};
-      let state = loadState();
+      function normalizePath(p) {
+        p = (p || "").trim();
+        if (!p) return "./";
+        if (!p.endsWith("/")) p += "/";
+        if (p.startsWith("/")) p = "." + p;
+        return p;
+      }
 
-      function setStatus(msg, kind = "") {
-        el.statusBar.textContent = msg || "";
-        el.statusBar.classList.remove("ok", "error");
-        if (kind) el.statusBar.classList.add(kind);
+      function loadPaths() {
+        try {
+          const raw = localStorage.getItem(PATHS_KEY);
+          if (!raw) return { iconsBase: "./", uiBase: "./" };
+          const p = JSON.parse(raw);
+          return {
+            iconsBase: normalizePath(p.iconsBase || "./"),
+            uiBase: normalizePath(p.uiBase || "./"),
+          };
+        } catch {
+          return { iconsBase: "./", uiBase: "./" };
+        }
+      }
+      function savePaths(p) {
+        localStorage.setItem(PATHS_KEY, JSON.stringify(p));
       }
 
       function normalize() {
@@ -716,13 +613,42 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         state.ki = clamp(Number(state.ki) || 0, 0, max);
       }
 
-      function setBackground() {
-        const bgUrl = `${PATHS.uiBase}${FILES.uiBackground}`;
-        document.body.style.backgroundImage = `url("${bgUrl}")`;
-        document.body.style.backgroundRepeat = "no-repeat";
-        document.body.style.backgroundPosition = "center top";
-        document.body.style.backgroundAttachment = "fixed";
-        document.body.style.backgroundSize = "cover";
+      function setStatus(targetEl, msg, kind = "") {
+        targetEl.textContent = msg || "";
+        targetEl.classList.remove("ok", "error");
+        if (kind) targetEl.classList.add(kind);
+      }
+
+      function preload(url) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve({ ok: true, url });
+          img.onerror = () => resolve({ ok: false, url });
+          img.src = url;
+        });
+      }
+
+      async function resolveFirstWorking(base, candidates) {
+        for (const name of candidates) {
+          const url = base + name;
+          const r = await preload(url);
+          if (r.ok) return url;
+        }
+        return null;
+      }
+
+      async function setBackground() {
+        const bgUrl = await resolveFirstWorking(paths.uiBase, FILES.uiBackgroundCandidates);
+        if (bgUrl) {
+          document.body.style.backgroundImage = `url("${bgUrl}")`;
+          document.body.style.backgroundRepeat = "no-repeat";
+          document.body.style.backgroundPosition = "center top";
+          document.body.style.backgroundAttachment = "fixed";
+          document.body.style.backgroundSize = "cover";
+        } else {
+          document.body.style.backgroundImage = "none";
+        }
+        return bgUrl;
       }
 
       function renderTopStats() {
@@ -734,19 +660,43 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.madText.textContent = MARTIAL_DIE[idx] || "1d4";
       }
 
-      function renderKIBar() {
+      function attachFallbackImg(imgEl, urlCandidates, altText) {
+        let i = 0;
+        imgEl.alt = altText || "image";
+        imgEl.referrerPolicy = "no-referrer"; // harmless, sometimes helps with odd hosting
+        imgEl.loading = "lazy";
+
+        const tryNext = () => {
+          if (i >= urlCandidates.length) {
+            imgEl.removeAttribute("src");
+            imgEl.style.display = "none";
+            return;
+          }
+          imgEl.style.display = "block";
+          imgEl.src = urlCandidates[i++];
+        };
+
+        imgEl.onerror = () => tryNext();
+        tryNext();
+      }
+
+      async function renderKIBar() {
         const max = getMaxKI(state.level);
         el.kiBar.innerHTML = "";
 
-        const availSrc = `${PATHS.uiBase}${FILES.kiAvailable}`;
-        const spentSrc = `${PATHS.uiBase}${FILES.kiSpent}`;
+        const availUrl = paths.uiBase + FILES.kiAvailable;
+        const spentUrl = paths.uiBase + FILES.kiSpent;
 
         for (let i = 1; i <= max; i++) {
           const orb = document.createElement("div");
           orb.className = "kiOrb";
           const img = document.createElement("img");
-          img.alt = i <= state.ki ? "KI available" : "KI spent";
-          img.src = i <= state.ki ? availSrc : spentSrc;
+          const wantAvail = i <= state.ki;
+          attachFallbackImg(
+            img,
+            wantAvail ? [availUrl] : [spentUrl],
+            wantAvail ? "KI available" : "KI spent"
+          );
           orb.appendChild(img);
           el.kiBar.appendChild(orb);
         }
@@ -777,7 +727,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         state.ki = max;
         saveState(state);
         render();
-        setStatus("KI refilled.", "ok");
+        setStatus(el.statusBar, "KI refilled.", "ok");
       }
 
       function renderAbilities() {
@@ -788,7 +738,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
         if (availableAbilities.length === 0) {
           const empty = document.createElement("div");
-          empty.className = "sub muted";
+          empty.className = "sub";
           empty.textContent = "No KI abilities available yet (set level to 2+).";
           el.abilityGrid.appendChild(empty);
           return;
@@ -800,8 +750,16 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
           const iconWrap = document.createElement("div");
           iconWrap.className = "abilityIcon";
+
           const img = document.createElement("img");
-          img.src = `${PATHS.iconsBase}${a.icon}`;
+          const iconUrl = paths.iconsBase + a.icon;
+
+          // If missing, replace with a small text placeholder instead of a broken image
+          img.onload = () => {};
+          img.onerror = () => {
+            iconWrap.innerHTML = `<div class="missingIcon">Missing icon<br>${a.icon}</div>`;
+          };
+          img.src = iconUrl;
           img.alt = `${a.name} icon`;
           iconWrap.appendChild(img);
 
@@ -812,7 +770,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
           const meta = document.createElement("div");
           meta.className = "abilityMeta";
-
           const costText =
             a.costOptions ? `Cost: ${a.costOptions[0]} to ${a.costOptions[a.costOptions.length - 1]} KI` : `Cost: ${a.cost} KI`;
           meta.textContent = `Unlocked at level ${a.level}. ${costText}.`;
@@ -847,14 +804,14 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
             const ok = spendKI(amt);
 
             if (!ok) {
-              setStatus(`Not enough KI to use ${a.name} (need ${amt}).`, "error");
+              setStatus(el.statusBar, `Not enough KI to use ${a.name} (need ${amt}).`, "error");
               render();
               return;
             }
 
             saveState(state);
             render();
-            setStatus(`${a.name} used, spent ${amt} KI.`, "ok");
+            setStatus(el.statusBar, `${a.name} used, spent ${amt} KI.`, "ok");
           });
 
           const q = document.createElement("button");
@@ -896,7 +853,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
         if (available.length === 0) {
           const empty = document.createElement("div");
-          empty.className = "sub muted";
+          empty.className = "sub";
           empty.textContent = "No reference features shown at this level.";
           el.refList.appendChild(empty);
           return;
@@ -931,12 +888,103 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         }
       }
 
-      function render() {
+      async function validateAssetsQuick() {
+        const checks = [];
+
+        // UI orbs
+        checks.push(preload(paths.uiBase + FILES.kiAvailable));
+        checks.push(preload(paths.uiBase + FILES.kiSpent));
+
+        // Background (try candidates)
+        const bgUrl = await resolveFirstWorking(paths.uiBase, FILES.uiBackgroundCandidates);
+        checks.push(Promise.resolve({ ok: Boolean(bgUrl), url: bgUrl || paths.uiBase + FILES.uiBackgroundCandidates[0] }));
+
+        // One icon sample (if this fails, iconsBase is likely wrong)
+        checks.push(preload(paths.iconsBase + "Patient_Defense.webp"));
+
+        const results = await Promise.all(checks);
+
+        const lines = [];
+        let okCount = 0;
+        for (const r of results) {
+          const ok = r.ok ? "OK" : "MISSING";
+          if (r.ok) okCount++;
+          lines.push(`${ok}: ${r.url || "(no url)"}`);
+        }
+
+        if (okCount === results.length) {
+          setStatus(el.assetStatus, "All checked assets loaded.\n" + lines.join("\n"), "ok");
+        } else {
+          setStatus(
+            el.assetStatus,
+            "Some assets did not load.\n" +
+              lines.join("\n") +
+              "\n\nFix: set Icons folder and UI folder above to the correct paths (they must match your repo folders exactly).",
+            "error"
+          );
+        }
+      }
+
+      async function render() {
         normalize();
         renderTopStats();
-        renderKIBar();
+        await setBackground();
+        await renderKIBar();
         renderAbilities();
         renderReference();
+      }
+
+      async function applyPathsFromInputs() {
+        paths.iconsBase = normalizePath(el.iconsBaseInput.value || "./");
+        paths.uiBase = normalizePath(el.uiBaseInput.value || "./");
+        savePaths(paths);
+        await render();
+        await validateAssetsQuick();
+      }
+
+      async function resetPaths() {
+        paths = { iconsBase: "./", uiBase: "./" };
+        savePaths(paths);
+        el.iconsBaseInput.value = "./";
+        el.uiBaseInput.value = "./";
+        await render();
+        await validateAssetsQuick();
+      }
+
+      async function autoDetect() {
+        setStatus(el.assetStatus, "Auto-detecting folders...", "");
+
+        let foundIcons = null;
+        for (const p of FOLDER_CANDIDATES.icons) {
+          const r = await preload(p + "Patient_Defense.webp");
+          if (r.ok) { foundIcons = p; break; }
+        }
+
+        let foundUI = null;
+        for (const p of FOLDER_CANDIDATES.ui) {
+          const r1 = await preload(p + FILES.kiAvailable);
+          const r2 = await preload(p + FILES.kiSpent);
+          if (r1.ok && r2.ok) { foundUI = p; break; }
+        }
+
+        paths.iconsBase = normalizePath(foundIcons || paths.iconsBase);
+        paths.uiBase = normalizePath(foundUI || paths.uiBase);
+        savePaths(paths);
+
+        el.iconsBaseInput.value = paths.iconsBase;
+        el.uiBaseInput.value = paths.uiBase;
+
+        await render();
+        await validateAssetsQuick();
+
+        if (!foundIcons || !foundUI) {
+          const msg =
+            "Auto-detect could not find everything.\n" +
+            `Icons folder found: ${foundIcons ? foundIcons : "(not found)"}\n` +
+            `UI folder found: ${foundUI ? foundUI : "(not found)"}\n\n` +
+            "If not found, your folders are probably named differently (or files are not in the repo root). Set the paths manually above.";
+          setStatus(el.assetStatus, msg, "error");
+        }
       }
 
       function init() {
@@ -950,11 +998,15 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.shortRest = document.getElementById("shortRest");
         el.longRest = document.getElementById("longRest");
         el.statusBar = document.getElementById("statusBar");
+        el.assetStatus = document.getElementById("assetStatus");
         el.abilityGrid = document.getElementById("abilityGrid");
         el.refList = document.getElementById("refList");
 
-        el.uiNames = document.getElementById("uiNames");
-        el.uiNames.textContent = `${FILES.kiAvailable}, ${FILES.kiSpent}, ${FILES.uiBackground}`;
+        el.iconsBaseInput = document.getElementById("iconsBaseInput");
+        el.uiBaseInput = document.getElementById("uiBaseInput");
+        el.applyPathsBtn = document.getElementById("applyPathsBtn");
+        el.autoDetectBtn = document.getElementById("autoDetectBtn");
+        el.resetPathsBtn = document.getElementById("resetPathsBtn");
 
         el.infoDialog = document.getElementById("infoDialog");
         el.dlgTitle = document.getElementById("dlgTitle");
@@ -963,11 +1015,17 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.dlgClose = document.getElementById("dlgClose");
         el.dlgX = document.getElementById("dlgX");
 
-        setBackground();
-
         el.levelInput.value = String(state.level);
 
-        el.levelInput.addEventListener("input", () => {
+        // Load saved paths into UI
+        el.iconsBaseInput.value = paths.iconsBase;
+        el.uiBaseInput.value = paths.uiBase;
+
+        el.applyPathsBtn.addEventListener("click", applyPathsFromInputs);
+        el.autoDetectBtn.addEventListener("click", autoDetect);
+        el.resetPathsBtn.addEventListener("click", resetPaths);
+
+        el.levelInput.addEventListener("input", async () => {
           const lvl = clamp(Number(el.levelInput.value), 1, 20);
           state.level = Number.isFinite(lvl) ? lvl : 1;
 
@@ -975,27 +1033,27 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           state.ki = clamp(state.ki, 0, newMax);
 
           saveState(state);
-          setStatus("");
-          render();
+          setStatus(el.statusBar, "", "");
+          await render();
         });
 
-        el.spend1.addEventListener("click", () => {
+        el.spend1.addEventListener("click", async () => {
           if (!spendKI(1)) {
-            setStatus("Not enough KI to spend 1.", "error");
-            render();
+            setStatus(el.statusBar, "Not enough KI to spend 1.", "error");
+            await render();
             return;
           }
           saveState(state);
-          render();
-          setStatus("Spent 1 KI.", "ok");
+          await render();
+          setStatus(el.statusBar, "Spent 1 KI.", "ok");
         });
 
-        el.gain1.addEventListener("click", () => {
+        el.gain1.addEventListener("click", async () => {
           const max = getMaxKI(state.level);
           state.ki = clamp(state.ki + 1, 0, max);
           saveState(state);
-          render();
-          setStatus("Gained 1 KI.", "ok");
+          await render();
+          setStatus(el.statusBar, "Gained 1 KI.", "ok");
         });
 
         el.shortRest.addEventListener("click", refillKI);
@@ -1012,7 +1070,11 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (!inside) el.infoDialog.close();
         });
 
-        render();
+        // Initial render + validation
+        (async () => {
+          await render();
+          await validateAssetsQuick();
+        })();
       }
 
       document.addEventListener("DOMContentLoaded", init);
