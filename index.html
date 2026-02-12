@@ -8,7 +8,6 @@
     <style>
       :root {
         --bg: #0b0f14;
-        --card: rgba(18, 26, 35, 0.88);
         --text: #e9eef5;
         --muted: #97a6b8;
         --border: #223041;
@@ -42,13 +41,45 @@
 
       .sub { margin: 0; color: var(--muted); }
 
+      /* Base section panel */
       .card {
         margin-top: 14px;
         padding: 14px;
-        background: var(--card);
-        border: 1px solid var(--border);
         border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(18, 26, 35, 0.88);
         backdrop-filter: blur(2px);
+      }
+
+      /*
+        Custom “picture box” frames (drop your images into ./UI/ and set filenames below)
+
+        If you provide 3 frame images later, set:
+        - --frame-core
+        - --frame-mutations
+        - --frame-reference
+      */
+      .framed {
+        position: relative;
+        padding: 22px; /* increase if your frame has thick borders */
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100% 100%;
+      }
+
+      .frame-core {
+        background-image: var(--frame-core, none);
+      }
+      .frame-mutations {
+        background-image: var(--frame-mutations, none);
+      }
+      .frame-reference {
+        background-image: var(--frame-reference, none);
+      }
+
+      /* If you want the old look when no frame image is set */
+      .framed:not([data-has-frame="1"]) {
+        background: rgba(18, 26, 35, 0.88);
       }
 
       .row {
@@ -316,10 +347,9 @@
     <main class="wrap">
       <header class="header">
         <h1>Monk KI Tracker</h1>
-        <p class="sub">Player-facing UI, no asset settings panel.</p>
       </header>
 
-      <section class="card" aria-label="Core">
+      <section class="card framed frame-core" id="coreCard" aria-label="Core">
         <div class="row">
           <label for="levelInput" class="label">Monk Level (1 to 20)</label>
           <input id="levelInput" type="number" min="1" max="20" step="1" />
@@ -357,7 +387,7 @@
         <div id="statusBar" class="statusBar" role="status" aria-live="polite"></div>
       </section>
 
-      <section class="card" aria-label="Mutations">
+      <section class="card framed frame-mutations" id="mutationsCard" aria-label="Mutations">
         <div class="sectionTitle">
           <h2>Mutations</h2>
           <div class="sub muted">Tap Use to spend KI, tap ? for details.</div>
@@ -365,10 +395,9 @@
         <div id="abilityGrid" class="abilityGrid"></div>
       </section>
 
-      <section class="card" aria-label="Reference Features">
+      <section class="card framed frame-reference" id="referenceCard" aria-label="Reference">
         <div class="sectionTitle">
           <h2>Reference</h2>
-          <div class="sub muted">No icons, no KI cost, reminders only.</div>
         </div>
         <div id="refList" class="refList"></div>
       </section>
@@ -393,11 +422,9 @@
     <script>
       "use strict";
 
-      // Fixed, player-facing asset locations:
-      // - icons are in ./icons/
-      // - UI images are in ./UI/
+      // IMPORTANT: capitalization matters on GitHub Pages
       const PATHS = {
-        iconsBase: "./Icons/",
+        iconsBase: "./Icons/", // you said yours was capitalized
         uiBase: "./UI/",
       };
 
@@ -406,6 +433,13 @@
         kiAvailable: "available_KI.webp",
         kiSpent: "spent_KI.webp",
       };
+
+      // Optional: set custom section frame images here when you have them.
+      // Put files in ./UI/ and set the names below.
+      // Example:
+      // document.documentElement.style.setProperty("--frame-core", 'url("./UI/Frame_Core.webp")');
+      // document.documentElement.style.setProperty("--frame-mutations", 'url("./UI/Frame_Mutations.webp")');
+      // document.documentElement.style.setProperty("--frame-reference", 'url("./UI/Frame_Reference.webp")');
 
       const STORAGE_KEY = "monk_ki_tracker_state_v2_player";
 
@@ -514,7 +548,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           return { level: 2, ki: 2 };
         }
       }
-
       function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
 
       function normalize() {
@@ -552,13 +585,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.madText.textContent = MARTIAL_DIE[idx] || "1d4";
       }
 
-      function attachImg(imgEl, url) {
-        imgEl.alt = "image";
-        imgEl.loading = "lazy";
-        imgEl.referrerPolicy = "no-referrer";
-        imgEl.src = url;
-      }
-
       function renderKIBar() {
         const max = getMaxKI(state.level);
         el.kiBar.innerHTML = "";
@@ -570,8 +596,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           const orb = document.createElement("div");
           orb.className = "kiOrb";
           const img = document.createElement("img");
-          const wantAvail = i <= state.ki;
-          attachImg(img, wantAvail ? availUrl : spentUrl);
+          img.loading = "lazy";
+          img.referrerPolicy = "no-referrer";
+          img.src = (i <= state.ki) ? availUrl : spentUrl;
           orb.appendChild(img);
           el.kiBar.appendChild(orb);
         }
@@ -614,7 +641,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         if (availableAbilities.length === 0) {
           const empty = document.createElement("div");
           empty.className = "sub";
-          empty.textContent = "No mutations available yet (set level to 2+).";
+          empty.textContent = "No mutations available yet.";
           el.abilityGrid.appendChild(empty);
           return;
         }
@@ -637,9 +664,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           name.className = "abilityName";
           name.textContent = a.name;
 
-          // Per your request:
-          // - remove "Unlocked at level X"
-          // Keep only KI cost info.
           const meta = document.createElement("div");
           meta.className = "abilityMeta";
           meta.textContent = a.costOptions
@@ -708,7 +732,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           el.abilityGrid.appendChild(card);
         }
 
-        // Disable Use buttons when not enough KI (use minimum cost)
         const useButtons = el.abilityGrid.querySelectorAll("button.btn");
         let i = 0;
         for (const a of availableAbilities) {
@@ -726,7 +749,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         if (available.length === 0) {
           const empty = document.createElement("div");
           empty.className = "sub";
-          empty.textContent = "No reference features shown at this level.";
+          empty.textContent = "No reference items yet.";
           el.refList.appendChild(empty);
           return;
         }
@@ -806,11 +829,11 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         });
 
         el.spend1.addEventListener("click", async () => {
-          if (!spendKI(1)) {
-            setStatus("Not enough KI to spend 1.", "error");
-            await render();
+          if (!state.ki) {
+            setStatus("Not enough KI.", "error");
             return;
           }
+          state.ki = Math.max(0, state.ki - 1);
           saveState(state);
           await render();
           setStatus("Spent 1 KI.", "ok");
@@ -818,7 +841,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
         el.gain1.addEventListener("click", async () => {
           const max = getMaxKI(state.level);
-          state.ki = clamp(state.ki + 1, 0, max);
+          state.ki = Math.min(max, state.ki + 1);
           saveState(state);
           await render();
           setStatus("Gained 1 KI.", "ok");
