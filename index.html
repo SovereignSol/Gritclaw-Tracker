@@ -20,14 +20,6 @@
         --frame-core: url("./UI/frame-core.webp");
         --frame-mutations: url("./UI/frame-mutations.webp");
         --frame-reference: url("./UI/frame-reference.webp");
-
-        /*
-          Frame safe-padding (this is the real fix for what you're seeing).
-          Your frame art has thick borders that are visually inside the section,
-          so the content needs more padding to avoid overlapping the branches.
-        */
-        --frame-pad-x: 72px;
-        --frame-pad-y: 58px;
       }
 
       * { box-sizing: border-box; }
@@ -57,24 +49,25 @@
       /* Base section panel */
       .card {
         margin-top: 14px;
+        padding: 14px;
         border-radius: 14px;
         border: 1px solid var(--border);
         background: rgba(18, 26, 35, 0.88);
         backdrop-filter: blur(2px);
-        overflow: hidden; /* keeps frame corners clean */
+
+        /* IMPORTANT: clip the frame image when we scale it */
+        overflow: hidden;
       }
 
       /*
-        FRAMES (fixed)
-        Key changes:
-        1) The frame image is drawn on a ::before layer that ALWAYS stretches to the box.
-        2) The content sits above it, with much larger padding (safe zone).
-        3) Frame stretching uses 100% 100% (fills the section exactly).
+        FRAMES (correct behavior)
+        - Do NOT change the panel size.
+        - Scale the frame image itself, so the branches get pushed outward.
       */
       .framed {
         position: relative;
-        padding: var(--frame-pad-y) var(--frame-pad-x);
-        background: rgba(18, 26, 35, 0.88);
+        padding: 22px; /* keeps your original UI size */
+        background: rgba(18, 26, 35, 0.88); /* fallback under the frame */
       }
 
       .framed::before {
@@ -82,31 +75,32 @@
         position: absolute;
         inset: 0;
         z-index: 0;
+
         background-repeat: no-repeat;
         background-position: center;
-        background-size: 100% 100%; /* stretch to fit the section */
+        background-size: cover; /* fills the box while keeping aspect ratio */
+
+        transform: scale(var(--frame-scale, 1.25)); /* scales the picture only */
+        transform-origin: center;
+
         pointer-events: none;
-        opacity: 1;
       }
 
-      /* Ensure all direct children are above the frame */
+      /* Keep content above the frame */
       .framed > * {
         position: relative;
         z-index: 1;
       }
 
+      /* Assign frame images to each section */
       .frame-core::before { background-image: var(--frame-core); }
       .frame-mutations::before { background-image: var(--frame-mutations); }
       .frame-reference::before { background-image: var(--frame-reference); }
 
-      /*
-        If Mutations needs even more safe padding than the others,
-        increase it here (tweak numbers until the branches stop touching content).
-      */
-      #mutationsCard.framed {
-        --frame-pad-x: 84px;
-        --frame-pad-y: 64px;
-      }
+      /* Tune scale per section (adjust if you want more or less zoom) */
+      #coreCard { --frame-scale: 1.18; }
+      #mutationsCard { --frame-scale: 1.35; }
+      #referenceCard { --frame-scale: 1.22; }
 
       .row {
         display: grid;
