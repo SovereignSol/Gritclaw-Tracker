@@ -533,7 +533,7 @@
           <button id="nextTurn" class="btn" type="button">Next Turn</button>
         </div>
 
-        <!-- Action Economy -->
+        <!-- Action Economy (NO passive abilities here) -->
         <div class="economyWrap" aria-label="Action economy">
           <div class="econRow">
             <div class="econLeft">
@@ -765,7 +765,7 @@
         reactionUsed: "Reaction_used.webp",
       };
 
-      const STORAGE_KEY = "monk_ki_tracker_state_v7_popups";
+      const STORAGE_KEY = "monk_ki_tracker_state_v8_controlled_adaptation_calc";
 
       function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
       function nint(v, fallback = 0) {
@@ -814,7 +814,7 @@
 - If the trigger never happens (or you choose not to react), the readied action is lost when your next turn starts.
 - If you Ready a SPELL, you cast it on your turn and hold it (concentration required), then release it with your reaction when the trigger happens. If you don’t release it, the spell slot is still spent.`;
 
-      // Mutations (icon files are in ./Icons/)
+      // Mutations
       const KI_ABILITIES = [
         { id: "extra_arms", name: "Extra Arms", icon: "Extra_arms.webp", level: 2, cost: 1, actionType: "bonus",
           desc: "Immediately after you take the Attack action on your turn, you can spend 1 ki point to make 4 unarmed strikes as a bonus action." },
@@ -831,12 +831,12 @@
 
 If you reduce the damage to 0, you can catch the missile if it is small enough for you to hold in one hand and you have at least one hand free. If you catch a missile in this way, you can spend 1 ki point to make a ranged attack with a range of 20/60 using the weapon or piece of ammunition you just caught, as part of the same reaction. You make this attack with proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack.` },
 
-        // Controlled Adaptation is the percentage reduction feature
+        // Controlled Adaptation: stores a % reduction for the next calculator damage apply
         { id: "controlled_adaptation", name: "Controlled Adaptation", icon: "Controlled_adaptation.webp", level: 3, cost: 1, actionType: "reaction", oncePerShortRest: true,
           desc:
 `You can draw upon your controlled mutation to endure extreme conditions. You gain advantage on ability checks made to withstand harsh environmental effects, such as extreme heat or cold, altitude changes, thin air, crushing pressure, or similar natural hazards.
 
-Additionally once per short rest, with your reaction, you may spend 1 Ki point to roll a D100 to reduce acid, cold, fire, lightning, or thunder damage by the percentage of that amount with the damage total rounded up.` },
+Additionally once per short rest, with your reaction, you may spend 1 Ki point to reduce the next incoming damage by a percentage (rounded up).` },
 
         { id: "mantis_reach", name: "Mantis Reach", icon: "Mantis_reach.webp", level: 3, cost: 1, actionType: "bonus",
           desc:
@@ -873,10 +873,35 @@ Additionally, whenever you make a saving throw and fail, you can spend 1 ki poin
 
         { id: "separation_body_soul", name: "Separation of Body and Soul", icon: "separation_body_soul.webp", level: 18, cost: 8, actionType: "action",
           desc: "You can spend 8 ki points to cast the astral projection spell, without needing material components. When you do so, you can't take any other creatures with you." },
+
+        // New mutation: Primal Swarm
+        { id: "primal_swarm", name: "Primal Swarm", icon: "Swarm_of_rats.webp", level: 1, cost: 0, actionType: "action", oncePerLongRest: true,
+          desc:
+`Once per long rest
+Being more connected to their non-mutated brethren, Ninkilim can call upon a swarm of rats anywhere rats would likely be found (cities, jungles, forests, grasslands, swamps, ruins, and similar environments).
+
+As an action, you summon a Swarm of Rats (as per the Monster Manual), which appears in an unoccupied space within 30 feet of you.
+
+The swarm acts immediately after your turn and follows your mental commands for 1 minute. You can command them verbally (no action required) to: Move, Attack, Help a creature within 5 feet of them, disengage.` },
       ];
 
-      // Stable Mutations (no icons), include action economy/rest info if applicable
+      // Stable Mutations (reference)
       const STABLE_MUTATIONS = [
+        { id: "tenacious_gnaw", level: 1, name: "Tenacious Gnaw", actionType: "action", rest: "none",
+          desc:
+`As an action, you can attempt to chew through nonmagical materials a real-world rat could reasonably damage, such as:
+Wood, rope, leather
+thin/damaged metal (locks, thin bars, soft alloys, rusted)
+softer stone plaster, weak mortar, sandstone, etc.
+
+Chewing through such materials takes 1 minute for rope or thin wood, and 5–10 minutes for sturdier materials (DM discretion)` },
+
+        { id: "burrow_digging", level: 1, name: "Burrow Digging", actionType: "passive", rest: "none",
+          desc: "Advantage on checks that have to do with digging" },
+
+        { id: "urban_instinct", level: 1, name: "Urban Instinct", actionType: "passive", rest: "none",
+          desc: "Gain advantage on perception checks involving traps and scanning urban environments." },
+
         { id: "unarmored_move_feat", level: 2, name: "Unarmored Movement (feature reminder)", actionType: "passive", rest: "none",
           desc:
 `Your speed increases by 10 feet while you are not wearing armor or wielding a shield. This bonus increases when you reach certain monk levels, as shown in the Monk table.
@@ -941,17 +966,19 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
               hpTemp: 0,
               acBase: 10,
 
-              // economy
               actionUsed: false,
               bonusUsed: false,
               reactionUsed: false,
               attacksUsed: 0,
 
-              // buffs
               hardenedSkinActive: false,
 
-              // per-rest
+              // per-rest locks
               controlledAdaptationUsed: false,
+              primalSwarmUsed: false,
+
+              // Controlled Adaptation pending damage reduction
+              pendingDamagePct: 0, // 0 means none
 
               // calculator
               calcExpr: "",
@@ -975,6 +1002,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
             hardenedSkinActive: !!p.hardenedSkinActive,
 
             controlledAdaptationUsed: !!p.controlledAdaptationUsed,
+            primalSwarmUsed: !!p.primalSwarmUsed,
+
+            pendingDamagePct: Math.max(0, Math.min(100, Number(p.pendingDamagePct) || 0)),
 
             calcExpr: typeof p.calcExpr === "string" ? p.calcExpr : "",
             calcResult: typeof p.calcResult === "string" ? p.calcResult : "0",
@@ -987,6 +1017,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
             actionUsed: false, bonusUsed: false, reactionUsed: false, attacksUsed: 0,
             hardenedSkinActive: false,
             controlledAdaptationUsed: false,
+            primalSwarmUsed: false,
+            pendingDamagePct: 0,
             calcExpr: "", calcResult: "0",
           };
         }
@@ -1005,6 +1037,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
         state.acBase = Math.max(0, nint(state.acBase, 10));
         state.attacksUsed = Math.max(0, nint(state.attacksUsed, 0));
+
+        state.pendingDamagePct = Math.max(0, Math.min(100, Number(state.pendingDamagePct) || 0));
 
         if (typeof state.calcExpr !== "string") state.calcExpr = "";
         if (typeof state.calcResult !== "string") state.calcResult = "0";
@@ -1098,18 +1132,10 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
       function renderEconomyButtons() {
         const maxAttacks = getMaxAttacksPerTurn();
-
-        // Basic attack is allowed only until attacksUsed reaches maxAttacks
         el.basicAttack.disabled = state.attacksUsed >= maxAttacks;
-
-        // "Additional Options" should spend the action, so disable if action already used
         el.actionOptions.disabled = state.actionUsed;
-
-        // Bonus action buttons
         el.offhandAttack.disabled = state.bonusUsed;
         el.bonusOptions.disabled = state.bonusUsed;
-
-        // Reaction buttons
         el.oppAttack.disabled = state.reactionUsed;
         el.readiedAttack.disabled = state.reactionUsed;
         el.reactionOptions.disabled = state.reactionUsed;
@@ -1134,9 +1160,17 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
       function applyDamage(amount) {
         amount = Math.max(0, Number(amount) || 0);
-        if (amount <= 0) return { usedTemp: 0, usedHp: 0 };
+        if (amount <= 0) return { usedTemp: 0, usedHp: 0, reduced: 0, pct: 0 };
 
-        // Hardened Skin is a +2 AC reminder only, no damage reduction here.
+        // Controlled Adaptation applies here to the NEXT damage applied via calculator
+        let reduced = 0;
+        let pct = 0;
+        if (state.pendingDamagePct > 0) {
+          pct = state.pendingDamagePct;
+          reduced = Math.ceil(amount * (pct / 100));
+          amount = Math.max(0, amount - reduced);
+          state.pendingDamagePct = 0; // consume it
+        }
 
         const usedTemp = Math.min(state.hpTemp, amount);
         state.hpTemp -= usedTemp;
@@ -1145,7 +1179,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         const usedHp = Math.min(state.hpNow, remaining);
         state.hpNow -= usedHp;
 
-        return { usedTemp, usedHp };
+        return { usedTemp, usedHp, reduced, pct };
       }
 
       function applyHeal(amount) {
@@ -1161,6 +1195,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         state.ki = max;
         if (isShortOrLongRest) {
           state.controlledAdaptationUsed = false;
+          state.primalSwarmUsed = false;
+          state.pendingDamagePct = 0;
         }
         saveState(state);
         render();
@@ -1172,10 +1208,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         state.bonusUsed = false;
         state.reactionUsed = false;
         state.attacksUsed = 0;
-
-        // "until end of your next turn"
         state.hardenedSkinActive = false;
-
         saveState(state);
         render();
         setStatus("Next turn: action economy refreshed.", "ok");
@@ -1203,11 +1236,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
       function useActionAttack() {
         const maxAttacks = getMaxAttacksPerTurn();
         if (state.attacksUsed >= maxAttacks) return false;
-
-        // Taking the Attack action consumes the action (once), but allows multiple attacks
         state.actionUsed = true;
         state.attacksUsed += 1;
-
         return true;
       }
 
@@ -1339,6 +1369,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
       function canUseMutation(a) {
         if (a.oncePerShortRest && a.id === "controlled_adaptation" && state.controlledAdaptationUsed) return false;
+        if (a.oncePerLongRest && a.id === "primal_swarm" && state.primalSwarmUsed) return false;
 
         if (a.actionType === "action") {
           if (state.actionUsed) return false;
@@ -1362,7 +1393,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           else setStatus(msg, kind);
         };
 
-        // consume economy
         if (a.actionType === "action") {
           if (!consumeEconomy("action")) { setSinkStatus("Action already used this turn.", "error"); return; }
         }
@@ -1373,10 +1403,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (!consumeEconomy("reaction")) { setSinkStatus("Reaction already used this turn.", "error"); return; }
         }
 
-        // spend KI
         const cost = nint(chosenCost, 0);
         if (!spendKI(cost)) {
-          // rollback economy consumption
           if (a.actionType === "action") state.actionUsed = false;
           if (a.actionType === "bonus") state.bonusUsed = false;
           if (a.actionType === "reaction") state.reactionUsed = false;
@@ -1386,7 +1414,32 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           return;
         }
 
-        // effects
+        // Controlled Adaptation: store percent for next calculator damage application
+        if (a.id === "controlled_adaptation") {
+          const pctStr = prompt("Controlled Adaptation: enter damage reduction percentage (0 to 100).");
+          let pct = Number(pctStr);
+          if (!Number.isFinite(pct)) pct = 0;
+          pct = Math.max(0, Math.min(100, pct));
+
+          state.pendingDamagePct = pct;
+          state.controlledAdaptationUsed = true;
+
+          saveState(state);
+          await render();
+          setSinkStatus(`Controlled Adaptation armed: next calculator damage reduced by ${pct}% (rounded up).`, "ok");
+          return;
+        }
+
+        // Hardened Skin is just AC tag until next turn
+        if (a.id === "hardened_skin") {
+          state.hardenedSkinActive = true;
+          saveState(state);
+          await render();
+          setSinkStatus(`${a.name} active: show +2 next to AC until Next Turn.`, "ok");
+          return;
+        }
+
+        // Healing Factor
         if (a.healsFromMartialDie) {
           const idx = clamp(state.level, 1, 20) - 1;
           const dieStr = MARTIAL_DIE[idx] || "1d4";
@@ -1401,34 +1454,12 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           return;
         }
 
-        if (a.id === "controlled_adaptation") {
-          state.controlledAdaptationUsed = true;
-
-          const dmgStr = prompt("Controlled Adaptation: enter incoming damage amount to reduce (number).");
-          const dmg = Math.max(0, Number(dmgStr));
-          const roll = rollDie(100);
-
-          if (!Number.isFinite(dmg)) {
-            saveState(state);
-            await render();
-            setSinkStatus(`Controlled Adaptation: rolled d100 = ${roll}%. (Damage input invalid)`, "ok");
-            return;
-          }
-
-          const reduced = Math.ceil(dmg * (roll / 100));
-          const final = Math.max(0, Math.ceil(dmg - reduced));
-
+        // Primal Swarm once per long rest lock
+        if (a.id === "primal_swarm") {
+          state.primalSwarmUsed = true;
           saveState(state);
           await render();
-          setSinkStatus(`Controlled Adaptation: rolled ${roll}%, reduced ${reduced} from ${dmg}, final ${final}.`, "ok");
-          return;
-        }
-
-        if (a.id === "hardened_skin") {
-          state.hardenedSkinActive = true;
-          saveState(state);
-          await render();
-          setSinkStatus(`${a.name} active: show +2 next to AC until Next Turn.`, "ok");
+          setSinkStatus(`${a.name} used (locked until long rest).`, "ok");
           return;
         }
 
@@ -1481,7 +1512,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           const costMeta = a.costOptions
             ? `Cost: ${a.costOptions[0]} to ${a.costOptions[a.costOptions.length - 1]} KI`
             : `Cost: ${nint(a.cost, 0)} KI`;
-          const restMeta = (a.oncePerShortRest) ? "Once per short rest." : "";
+          const restMeta =
+            (a.oncePerShortRest) ? "Once per short rest." :
+            (a.oncePerLongRest) ? "Once per long rest." : "";
           const actMeta = `Uses: ${actionTypeLabel(a.actionType || "action")}`;
           meta.textContent = [actMeta, costMeta, restMeta].filter(Boolean).join(" | ");
 
@@ -1515,6 +1548,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
             if (!canUseMutation(a)) {
               const reason =
                 (a.oncePerShortRest && a.id === "controlled_adaptation" && state.controlledAdaptationUsed) ? "Locked until Short/Long Rest." :
+                (a.oncePerLongRest && a.id === "primal_swarm" && state.primalSwarmUsed) ? "Locked until Long Rest." :
                 (a.actionType === "action" && state.actionUsed) ? "Action already used this turn." :
                 (a.actionType === "bonus" && state.bonusUsed) ? "Bonus action already used this turn." :
                 (a.actionType === "reaction" && state.reactionUsed) ? "Reaction already used this turn." :
@@ -1547,7 +1581,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           el.abilityGrid.appendChild(card);
         }
 
-        // Disable "Use" if not usable
         const cards = el.abilityGrid.querySelectorAll(".abilityCard");
         const available = KI_ABILITIES.filter(a => state.level >= a.level);
         cards.forEach((card, i) => {
@@ -1614,16 +1647,13 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
       ];
 
       function openOptions(kind) {
-        // kind: "action" | "bonus" | "reaction"
         el.optTitle.textContent = `Additional Options (${actionTypeLabel(kind)})`;
         setOptStatus("");
 
-        // Generic section
         el.optGenericBtns.innerHTML = "";
         el.optStableBtns.innerHTML = "";
         el.optMutationBtns.innerHTML = "";
 
-        // Title + show/hide generic section based on kind
         if (kind === "action") {
           el.optSectionGeneric.style.display = "";
           el.optGenericTitle.textContent = "Generic actions";
@@ -1694,7 +1724,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           el.optGenericBtns.appendChild(q);
         }
 
-        // Mutation buttons (only those matching kind)
+        // Mutation buttons matching kind
         const availMut = KI_ABILITIES.filter(a => state.level >= a.level && (a.actionType || "action") === kind);
         if (availMut.length === 0) {
           const sp = document.createElement("div");
@@ -1707,7 +1737,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
             b.className = "btn";
             b.type = "button";
             const costMeta = a.costOptions ? `${a.costOptions[0]}-${a.costOptions[a.costOptions.length - 1]} KI` : `${nint(a.cost,0)} KI`;
-            const restMeta = a.oncePerShortRest ? " (1/Short Rest)" : "";
+            const restMeta = a.oncePerShortRest ? " (1/Short Rest)" : (a.oncePerLongRest ? " (1/Long Rest)" : "");
             b.textContent = `${a.name} (${costMeta}${restMeta})`;
             b.disabled = !canUseMutation(a);
 
@@ -1743,47 +1773,39 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           }
         }
 
-        // Stable mutation buttons (list every stable item, but only those that match kind OR passives as info)
+        // Stable mutation buttons: ONLY non-passive (per your request to remove passives from economy usage)
         const availStable = STABLE_MUTATIONS.filter(r => state.level >= r.level);
-        if (availStable.length === 0) {
+        const stableForKind = availStable.filter(r => (r.actionType || "passive") === kind);
+
+        if (stableForKind.length === 0) {
           const sp = document.createElement("div");
           sp.className = "sub";
-          sp.textContent = "No stable mutations yet.";
+          sp.textContent = "No stable mutations for this action type.";
           el.optStableBtns.appendChild(sp);
         } else {
-          const filtered =
-            availStable.filter(r => (r.actionType || "passive") === kind || (r.actionType || "passive") === "passive");
-
-          for (const r of filtered) {
+          for (const r of stableForKind) {
             const b = document.createElement("button");
             b.className = "btn";
             b.type = "button";
-
             const meta = stableMetaText(r);
             b.textContent = `${r.name} (${meta})`;
 
-            // If passive, just show info
-            if ((r.actionType || "passive") === "passive") {
-              b.addEventListener("click", () => openDialog(r.name, r.desc, meta));
-            } else {
-              // Spend the appropriate economy
-              const canSpend =
-                (r.actionType === "action" && !state.actionUsed) ||
-                (r.actionType === "bonus" && !state.bonusUsed) ||
-                (r.actionType === "reaction" && !state.reactionUsed);
+            const canSpend =
+              (r.actionType === "action" && !state.actionUsed) ||
+              (r.actionType === "bonus" && !state.bonusUsed) ||
+              (r.actionType === "reaction" && !state.reactionUsed);
 
-              b.disabled = !canSpend;
+            b.disabled = !canSpend;
 
-              b.addEventListener("click", async () => {
-                if (!consumeEconomy(r.actionType)) {
-                  setOptStatus(`${actionTypeLabel(r.actionType)} already used this turn.`, "error");
-                  return;
-                }
-                saveState(state);
-                await render();
-                setOptStatus(`Used ${actionTypeLabel(r.actionType)} for: ${r.name}`, "ok");
-              });
-            }
+            b.addEventListener("click", async () => {
+              if (!consumeEconomy(r.actionType)) {
+                setOptStatus(`${actionTypeLabel(r.actionType)} already used this turn.`, "error");
+                return;
+              }
+              saveState(state);
+              await render();
+              setOptStatus(`Used ${actionTypeLabel(r.actionType)} for: ${r.name}`, "ok");
+            });
 
             const q = document.createElement("button");
             q.className = "qBtn";
@@ -1831,12 +1853,10 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.nextTurn = document.getElementById("nextTurn");
         el.statusBar = document.getElementById("statusBar");
 
-        // economy icons
         el.iconAction = document.getElementById("iconAction");
         el.iconBonus = document.getElementById("iconBonus");
         el.iconReaction = document.getElementById("iconReaction");
 
-        // economy buttons
         el.basicAttack = document.getElementById("basicAttack");
         el.actionOptions = document.getElementById("actionOptions");
         el.offhandAttack = document.getElementById("offhandAttack");
@@ -1846,7 +1866,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.readiedInfo = document.getElementById("readiedInfo");
         el.reactionOptions = document.getElementById("reactionOptions");
 
-        // combat
         el.hpNowText = document.getElementById("hpNowText");
         el.hpMaxText = document.getElementById("hpMaxText");
         el.hpTempText = document.getElementById("hpTempText");
@@ -1859,11 +1878,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.hpZeroTemp = document.getElementById("hpZeroTemp");
         el.openCalc = document.getElementById("openCalc");
 
-        // lists
         el.abilityGrid = document.getElementById("abilityGrid");
         el.refList = document.getElementById("refList");
 
-        // info dialog
         el.infoDialog = document.getElementById("infoDialog");
         el.dlgTitle = document.getElementById("dlgTitle");
         el.dlgDesc = document.getElementById("dlgDesc");
@@ -1871,7 +1888,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.dlgClose = document.getElementById("dlgClose");
         el.dlgX = document.getElementById("dlgX");
 
-        // options dialog
         el.optionsDialog = document.getElementById("optionsDialog");
         el.optTitle = document.getElementById("optTitle");
         el.optGenericBtns = document.getElementById("optGenericBtns");
@@ -1883,7 +1899,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.optSectionGeneric = document.getElementById("optSectionGeneric");
         el.optGenericTitle = document.getElementById("optGenericTitle");
 
-        // calculator dialog
         el.calcDialog = document.getElementById("calcDialog");
         el.calcExpr = document.getElementById("calcExpr");
         el.calcResult = document.getElementById("calcResult");
@@ -1895,13 +1910,11 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.calcClose = document.getElementById("calcClose");
         el.calcX = document.getElementById("calcX");
 
-        // initial input values
         el.levelInput.value = String(state.level);
         el.hpMaxInput.value = String(state.hpMax);
         el.hpTempInput.value = String(state.hpTemp);
         el.acInput.value = String(state.acBase);
 
-        // level change
         el.levelInput.addEventListener("input", async () => {
           state.level = clamp(nint(el.levelInput.value, 1), 1, 20);
           const newMaxKi = getMaxKI(state.level);
@@ -1911,7 +1924,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           await render();
         });
 
-        // KI buttons
         el.spend1.addEventListener("click", async () => {
           if (!state.ki) { setStatus("Not enough KI.", "error"); return; }
           state.ki = Math.max(0, state.ki - 1);
@@ -1932,7 +1944,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.longRest.addEventListener("click", () => refillKI(true));
         el.nextTurn.addEventListener("click", nextTurn);
 
-        // economy buttons
         el.basicAttack.addEventListener("click", async () => {
           normalize();
           const ok = useActionAttack();
@@ -1989,7 +2000,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
         el.readiedInfo.addEventListener("click", () => openDialog("Readied Attack", READIED_TEXT, ""));
 
-        // HP/AC setters
         el.hpMaxInput.addEventListener("input", async () => {
           state.hpMax = Math.max(0, nint(el.hpMaxInput.value, 0));
           state.hpNow = clamp(state.hpNow, 0, state.hpMax);
@@ -2025,7 +2035,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           setStatus("Temp HP cleared.", "ok");
         });
 
-        // Info dialog controls
         el.dlgClose.addEventListener("click", () => el.infoDialog.close());
         el.dlgX.addEventListener("click", () => el.infoDialog.close());
         el.infoDialog.addEventListener("click", (e) => {
@@ -2036,7 +2045,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (!inside) el.infoDialog.close();
         });
 
-        // Options dialog controls
         el.optClose.addEventListener("click", () => el.optionsDialog.close());
         el.optX.addEventListener("click", () => el.optionsDialog.close());
         el.optionsDialog.addEventListener("click", (e) => {
@@ -2047,9 +2055,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (!inside) el.optionsDialog.close();
         });
 
-        // Calculator popup open/close
         el.openCalc.addEventListener("click", () => {
-          setCalcStatus("");
+          setCalcStatus(state.pendingDamagePct > 0 ? `Controlled Adaptation armed: next damage reduced by ${state.pendingDamagePct}%.` : "");
           if (typeof el.calcDialog.showModal === "function") el.calcDialog.showModal();
           else alert("Calculator dialog not supported in this browser.");
         });
@@ -2064,7 +2071,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (!inside) el.calcDialog.close();
         });
 
-        // Calculator buttons
         el.calcGrid.addEventListener("click", (e) => {
           const btn = e.target.closest("[data-k]");
           if (!btn) return;
@@ -2073,7 +2079,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           calcPress(k);
         });
 
-        // Calculator keyboard, only when calc dialog is open and focus is not in inputs
         document.addEventListener("keydown", (e) => {
           if (!el.calcDialog.open) return;
 
@@ -2096,7 +2101,12 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           const used = applyDamage(amt);
           saveState(state);
           await render();
-          setCalcStatus(`Applied ${amt} damage (Temp used: ${used.usedTemp}, HP used: ${used.usedHp}).`, "ok");
+
+          if (used.pct > 0) {
+            setCalcStatus(`Applied ${amt} damage, reduced by ${used.pct}% (−${used.reduced}), then dealt remaining (Temp used: ${used.usedTemp}, HP used: ${used.usedHp}).`, "ok");
+          } else {
+            setCalcStatus(`Applied ${amt} damage (Temp used: ${used.usedTemp}, HP used: ${used.usedHp}).`, "ok");
+          }
         });
 
         el.applyAsHeal.addEventListener("click", async () => {
@@ -2119,7 +2129,6 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           }
         });
 
-        // Rest of init
         render();
       }
 
