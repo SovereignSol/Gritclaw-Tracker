@@ -41,7 +41,6 @@
 
       .sub { margin: 0; color: var(--muted); }
 
-      /* Simple panels (frames removed) */
       .card {
         margin-top: 14px;
         padding: 14px;
@@ -178,6 +177,100 @@
       }
       .sectionTitle h2 { margin: 0; font-size: 18px; }
 
+      /* Health + AC layout */
+      .hpGrid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      @media (min-width: 860px) {
+        .hpGrid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+      }
+
+      .hpControls {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      @media (min-width: 860px) {
+        .hpControls { grid-template-columns: 1fr 1fr 1fr auto; align-items: end; }
+      }
+
+      /* Calculator */
+      .calcWrap {
+        margin-top: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(0,0,0,0.18);
+      }
+      .calcTop {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      @media (min-width: 860px) {
+        .calcTop { grid-template-columns: 1fr auto; align-items: end; }
+      }
+
+      .calcDisplayBox {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 10px;
+        background: rgba(15, 22, 32, 0.95);
+      }
+      .calcExpr {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 14px;
+        color: var(--muted);
+        min-height: 18px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .calcResult {
+        margin-top: 6px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .calcApplyBtns {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .calcGrid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(56px, 1fr));
+        gap: 10px;
+      }
+
+      .calcKey {
+        padding: 14px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(26, 39, 53, 0.85);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 750;
+        text-align: center;
+        user-select: none;
+      }
+      .calcKey:hover { background: var(--btnHover); }
+      .calcKey.wide { grid-column: span 2; }
+      .calcKey.danger { color: #fff; background: rgba(255, 107, 107, 0.25); }
+      .calcKey.ok { color: #06120b; background: rgba(124, 230, 165, 0.95); border-color: rgba(124, 230, 165, 0.35); }
+      .calcKey.ok:hover { filter: brightness(0.95); }
+
+      /* Mutations + Reference */
       .abilityGrid {
         margin-top: 12px;
         display: grid;
@@ -226,7 +319,6 @@
 
       .abilityName { font-weight: 700; letter-spacing: 0.2px; }
       .abilityMeta { margin-top: 4px; font-size: 13px; color: var(--muted); }
-
       .abilityBtns { display: flex; gap: 8px; align-items: center; }
 
       select {
@@ -270,48 +362,6 @@
         line-height: 1.45;
         white-space: pre-wrap;
       }
-
-      /* Health + AC layout */
-      .hpGrid {
-        margin-top: 12px;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      @media (min-width: 860px) {
-        .hpGrid { grid-template-columns: 1fr 1fr 1fr 1fr; }
-      }
-
-      .hpControls {
-        margin-top: 10px;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      @media (min-width: 860px) {
-        .hpControls { grid-template-columns: 1fr 1fr auto auto; align-items: end; }
-      }
-
-      .calcRow {
-        margin-top: 12px;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      @media (min-width: 860px) {
-        .calcRow { grid-template-columns: 1fr 1fr auto; align-items: end; }
-      }
-
-      .calcBox {
-        margin-top: 10px;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 12px;
-        background: rgba(0,0,0,0.18);
-      }
-
-      .calcTitle { font-weight: 700; margin: 0 0 6px; }
-      .calcHint { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
 
       dialog {
         border: 1px solid var(--border);
@@ -399,11 +449,11 @@
         <div id="statusBar" class="statusBar" role="status" aria-live="polite"></div>
       </section>
 
-      <!-- Health + AC -->
-      <section class="card" id="combatCard" aria-label="Health and AC">
+      <!-- Health + AC + Calculator -->
+      <section class="card" id="combatCard" aria-label="Health, AC, and Calculator">
         <div class="sectionTitle">
-          <h2>Health and AC</h2>
-          <div class="sub">Tracks current HP, temp HP, max HP, and AC.</div>
+          <h2>Health, AC, and Calculator</h2>
+          <div class="sub">HP and AC track, plus a literal calculator that can apply damage or healing.</div>
         </div>
 
         <div class="hpGrid">
@@ -444,28 +494,46 @@
           </div>
         </div>
 
-        <div class="calcBox" aria-label="Damage and healing calculator">
-          <p class="calcTitle">Quick Damage and Healing</p>
-          <p class="calcHint">
-            Enter a number and apply it. Damage consumes Temp HP first, then Current HP. Healing cannot exceed Max HP.
-          </p>
+        <div class="calcWrap" aria-label="Calculator">
+          <div class="calcTop">
+            <div class="calcDisplayBox">
+              <div class="calcExpr" id="calcExpr"></div>
+              <div class="calcResult" id="calcResult">0</div>
+            </div>
 
-          <div class="calcRow">
-            <div>
-              <label class="label" for="calcAmount">Amount</label>
-              <input id="calcAmount" type="number" step="1" />
+            <div class="calcApplyBtns">
+              <button id="applyAsDamage" class="btn" type="button">Apply Result as Damage</button>
+              <button id="applyAsHeal" class="btn" type="button">Apply Result as Healing</button>
+              <button id="calcCopy" class="btn" type="button">Copy Result</button>
             </div>
-            <div>
-              <label class="label" for="calcMode">Mode</label>
-              <select id="calcMode">
-                <option value="damage">Damage</option>
-                <option value="heal">Heal</option>
-              </select>
-            </div>
-            <div class="controls" style="margin-top:0">
-              <button id="calcApply" class="btn" type="button">Apply</button>
-              <button id="calcClear" class="btn" type="button">Clear</button>
-            </div>
+          </div>
+
+          <div class="calcGrid" id="calcGrid">
+            <button class="calcKey danger" data-k="C" type="button">C</button>
+            <button class="calcKey" data-k="(" type="button">(</button>
+            <button class="calcKey" data-k=")" type="button">)</button>
+            <button class="calcKey" data-k="⌫" type="button">⌫</button>
+
+            <button class="calcKey" data-k="7" type="button">7</button>
+            <button class="calcKey" data-k="8" type="button">8</button>
+            <button class="calcKey" data-k="9" type="button">9</button>
+            <button class="calcKey" data-k="/" type="button">÷</button>
+
+            <button class="calcKey" data-k="4" type="button">4</button>
+            <button class="calcKey" data-k="5" type="button">5</button>
+            <button class="calcKey" data-k="6" type="button">6</button>
+            <button class="calcKey" data-k="*" type="button">×</button>
+
+            <button class="calcKey" data-k="1" type="button">1</button>
+            <button class="calcKey" data-k="2" type="button">2</button>
+            <button class="calcKey" data-k="3" type="button">3</button>
+            <button class="calcKey" data-k="-" type="button">−</button>
+
+            <button class="calcKey wide" data-k="0" type="button">0</button>
+            <button class="calcKey" data-k="." type="button">.</button>
+            <button class="calcKey" data-k="+" type="button">+</button>
+
+            <button class="calcKey ok wide" data-k="=" type="button">=</button>
           </div>
 
           <div class="statusBar" id="calcStatus" role="status" aria-live="polite"></div>
@@ -520,7 +588,7 @@
         kiSpent: "spent_KI.webp",
       };
 
-      const STORAGE_KEY = "monk_ki_tracker_state_v3_combat";
+      const STORAGE_KEY = "monk_ki_tracker_state_v4_calculator";
 
       function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
       function nint(v, fallback = 0) {
@@ -633,6 +701,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
               hpMax: 10,
               hpTemp: 0,
               ac: 10,
+              calcExpr: "",
+              calcResult: "0",
             };
           }
           const p = JSON.parse(raw);
@@ -643,9 +713,11 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
             hpMax: Math.max(0, nint(p.hpMax, 10)),
             hpTemp: Math.max(0, nint(p.hpTemp, 0)),
             ac: Math.max(0, nint(p.ac, 10)),
+            calcExpr: typeof p.calcExpr === "string" ? p.calcExpr : "",
+            calcResult: typeof p.calcResult === "string" ? p.calcResult : "0",
           };
         } catch {
-          return { level: 2, ki: 2, hpNow: 10, hpMax: 10, hpTemp: 0, ac: 10 };
+          return { level: 2, ki: 2, hpNow: 10, hpMax: 10, hpTemp: 0, ac: 10, calcExpr: "", calcResult: "0" };
         }
       }
 
@@ -660,6 +732,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         state.hpNow = clamp(nint(state.hpNow, 0), 0, state.hpMax);
         state.hpTemp = Math.max(0, nint(state.hpTemp, 0));
         state.ac = Math.max(0, nint(state.ac, 10));
+
+        if (typeof state.calcExpr !== "string") state.calcExpr = "";
+        if (typeof state.calcResult !== "string") state.calcResult = "0";
       }
 
       function setStatus(msg, kind = "") {
@@ -756,7 +831,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
       }
 
       function applyDamage(amount) {
-        amount = Math.max(0, nint(amount, 0));
+        amount = Math.max(0, Number(amount) || 0);
         if (amount <= 0) return { usedTemp: 0, usedHp: 0 };
 
         const usedTemp = Math.min(state.hpTemp, amount);
@@ -770,12 +845,112 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
       }
 
       function applyHeal(amount) {
-        amount = Math.max(0, nint(amount, 0));
+        amount = Math.max(0, Number(amount) || 0);
         if (amount <= 0) return 0;
         const before = state.hpNow;
         state.hpNow = Math.min(state.hpMax, state.hpNow + amount);
         return state.hpNow - before;
       }
+
+      /* ---------- CALCULATOR (safe expression eval) ---------- */
+
+      function renderCalculator() {
+        el.calcExpr.textContent = state.calcExpr || "";
+        el.calcResult.textContent = state.calcResult || "0";
+      }
+
+      // Only allow digits, operators, parentheses, dot, spaces
+      function sanitizeExpr(expr) {
+        if (typeof expr !== "string") return "";
+        return expr.replace(/[^0-9+\-*/().\s]/g, "");
+      }
+
+      function safeEval(expr) {
+        const s = sanitizeExpr(expr).trim();
+        if (!s) return { ok: true, value: 0, expr: "" };
+
+        // Basic parenthesis balance check
+        let bal = 0;
+        for (const ch of s) {
+          if (ch === "(") bal++;
+          if (ch === ")") bal--;
+          if (bal < 0) return { ok: false, error: "Mismatched parentheses." };
+        }
+        if (bal !== 0) return { ok: false, error: "Mismatched parentheses." };
+
+        // Prevent obvious operator spam
+        if (/[*\/+\-]{3,}/.test(s)) return { ok: false, error: "Invalid operator sequence." };
+
+        // Evaluate with Function, after strict sanitization
+        try {
+          const fn = new Function(`"use strict"; return (${s});`);
+          const v = fn();
+          if (!Number.isFinite(v)) return { ok: false, error: "Result is not a finite number." };
+          return { ok: true, value: v, expr: s };
+        } catch {
+          return { ok: false, error: "Invalid expression." };
+        }
+      }
+
+      function setCalcResultFromExpr() {
+        const r = safeEval(state.calcExpr);
+        if (!r.ok) {
+          state.calcResult = "ERR";
+          setCalcStatus(r.error, "error");
+          renderCalculator();
+          return;
+        }
+        state.calcResult = String(r.value);
+        setCalcStatus("");
+        renderCalculator();
+      }
+
+      function calcPress(key) {
+        if (key === "C") {
+          state.calcExpr = "";
+          state.calcResult = "0";
+          setCalcStatus("");
+          saveState(state);
+          renderCalculator();
+          return;
+        }
+        if (key === "⌫") {
+          state.calcExpr = (state.calcExpr || "").slice(0, -1);
+          saveState(state);
+          setCalcResultFromExpr();
+          saveState(state);
+          return;
+        }
+        if (key === "=") {
+          const r = safeEval(state.calcExpr);
+          if (!r.ok) {
+            state.calcResult = "ERR";
+            setCalcStatus(r.error, "error");
+            saveState(state);
+            renderCalculator();
+            return;
+          }
+          state.calcExpr = String(r.value);
+          state.calcResult = String(r.value);
+          setCalcStatus("");
+          saveState(state);
+          renderCalculator();
+          return;
+        }
+
+        state.calcExpr = sanitizeExpr((state.calcExpr || "") + key);
+        saveState(state);
+        setCalcResultFromExpr();
+        saveState(state);
+      }
+
+      function getCalcNumericResult() {
+        const r = safeEval(state.calcExpr);
+        if (!r.ok) return { ok: false, error: r.error };
+        return { ok: true, value: r.value };
+      }
+
+      /* ---------- Mutations / Reference ---------- */
 
       function renderAbilities() {
         el.abilityGrid.innerHTML = "";
@@ -936,6 +1111,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         renderKIBar();
         renderAbilities();
         renderReference();
+        renderCalculator();
+        setCalcResultFromExpr();
       }
 
       function init() {
@@ -964,12 +1141,14 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.hpFull = document.getElementById("hpFull");
         el.hpZeroTemp = document.getElementById("hpZeroTemp");
 
-        // Calc
-        el.calcAmount = document.getElementById("calcAmount");
-        el.calcMode = document.getElementById("calcMode");
-        el.calcApply = document.getElementById("calcApply");
-        el.calcClear = document.getElementById("calcClear");
+        // Calculator
+        el.calcExpr = document.getElementById("calcExpr");
+        el.calcResult = document.getElementById("calcResult");
         el.calcStatus = document.getElementById("calcStatus");
+        el.calcGrid = document.getElementById("calcGrid");
+        el.applyAsDamage = document.getElementById("applyAsDamage");
+        el.applyAsHeal = document.getElementById("applyAsHeal");
+        el.calcCopy = document.getElementById("calcCopy");
 
         // Dialog
         el.infoDialog = document.getElementById("infoDialog");
@@ -984,6 +1163,10 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.hpMaxInput.value = String(state.hpMax);
         el.hpTempInput.value = String(state.hpTemp);
         el.acInput.value = String(state.ac);
+
+        // Restore calculator display
+        renderCalculator();
+        setCalcResultFromExpr();
 
         el.levelInput.addEventListener("input", async () => {
           state.level = clamp(nint(el.levelInput.value, 1), 1, 20);
@@ -1052,32 +1235,59 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           setCalcStatus("Temp HP cleared.", "ok");
         });
 
-        // Calculator apply
-        el.calcApply.addEventListener("click", async () => {
-          normalize();
-          const amt = nint(el.calcAmount.value, 0);
-          if (!Number.isFinite(amt) || amt === 0) {
-            setCalcStatus("Enter a non-zero amount.", "error");
-            return;
-          }
-
-          const mode = String(el.calcMode.value || "damage");
-          if (mode === "damage") {
-            const used = applyDamage(Math.abs(amt));
-            saveState(state);
-            await render();
-            setCalcStatus(`Damage applied: -${Math.abs(amt)} (Temp used: ${used.usedTemp}, HP used: ${used.usedHp}).`, "ok");
-          } else {
-            const healed = applyHeal(Math.abs(amt));
-            saveState(state);
-            await render();
-            setCalcStatus(`Healing applied: +${healed} (capped at Max HP).`, "ok");
-          }
+        // Calculator buttons
+        el.calcGrid.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-k]");
+          if (!btn) return;
+          const k = String(btn.getAttribute("data-k") || "");
+          if (!k) return;
+          calcPress(k);
         });
 
-        el.calcClear.addEventListener("click", () => {
-          el.calcAmount.value = "";
-          setCalcStatus("");
+        // Keyboard input for calculator
+        document.addEventListener("keydown", (e) => {
+          const k = e.key;
+
+          // If user is typing in inputs, do not hijack keys
+          const tag = (document.activeElement && document.activeElement.tagName) ? document.activeElement.tagName.toLowerCase() : "";
+          if (tag === "input" || tag === "select" || tag === "textarea") return;
+
+          if (k >= "0" && k <= "9") return calcPress(k);
+          if (k === "+" || k === "-" || k === "*" || k === "/" || k === "." || k === "(" || k === ")") return calcPress(k);
+          if (k === "Enter" || k === "=") { e.preventDefault(); return calcPress("="); }
+          if (k === "Backspace") { e.preventDefault(); return calcPress("⌫"); }
+          if (k === "Escape") return calcPress("C");
+        });
+
+        el.applyAsDamage.addEventListener("click", async () => {
+          normalize();
+          const r = getCalcNumericResult();
+          if (!r.ok) { setCalcStatus(r.error, "error"); return; }
+          const amt = Math.max(0, Number(r.value));
+          const used = applyDamage(amt);
+          saveState(state);
+          await render();
+          setCalcStatus(`Applied ${amt} damage (Temp used: ${used.usedTemp}, HP used: ${used.usedHp}).`, "ok");
+        });
+
+        el.applyAsHeal.addEventListener("click", async () => {
+          normalize();
+          const r = getCalcNumericResult();
+          if (!r.ok) { setCalcStatus(r.error, "error"); return; }
+          const amt = Math.max(0, Number(r.value));
+          const healed = applyHeal(amt);
+          saveState(state);
+          await render();
+          setCalcStatus(`Applied ${healed} healing (capped at Max HP).`, "ok");
+        });
+
+        el.calcCopy.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(String(el.calcResult.textContent || "0"));
+            setCalcStatus("Result copied to clipboard.", "ok");
+          } catch {
+            setCalcStatus("Could not copy (browser blocked clipboard).", "error");
+          }
         });
 
         el.dlgClose.addEventListener("click", () => el.infoDialog.close());
@@ -1098,4 +1308,3 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
     </script>
   </body>
 </html>
-```0
