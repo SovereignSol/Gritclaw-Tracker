@@ -81,27 +81,22 @@
       }
 
       .statBox {
-        position: relative;
         border: 1px solid var(--border);
         border-radius: 14px;
         padding: 12px;
         background: rgba(0,0,0,0.18);
-        overflow: hidden;
       }
-      .statLabel { font-size: 12px; color: var(--muted); }
+      .statLabel { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
       .statValue { margin-top: 4px; font-size: 18px; font-weight: 650; }
 
-      .acBadge {
-        position: absolute;
-        top: 8px;
-        right: 10px;
+      .acBuffTag {
+        display: none;
         font-size: 13px;
         font-weight: 900;
         color: var(--buff);
-        display: none;
         text-shadow: 0 0 8px rgba(109,255,143,0.35);
       }
-      .acBadge.show { display: inline; }
+      .acBuffTag.show { display: inline; }
 
       .kiHeader {
         display: flex;
@@ -210,14 +205,15 @@
         gap: 10px;
       }
       @media (min-width: 900px) {
-        .econRow { grid-template-columns: 180px 1fr; align-items: center; }
+        .econRow { grid-template-columns: 210px 1fr; align-items: center; }
       }
 
-      .econIcons {
+      .econLeft {
         display: flex;
-        gap: 10px;
         align-items: center;
-        flex-wrap: wrap;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 13px;
       }
 
       .econIcon {
@@ -229,6 +225,7 @@
         background: rgba(0,0,0,0.25);
         display: grid;
         place-items: center;
+        flex: 0 0 auto;
       }
       .econIcon img {
         width: 44px;
@@ -241,12 +238,6 @@
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
-        justify-content: flex-start;
-      }
-
-      .econLabel {
-        font-size: 13px;
-        color: var(--muted);
       }
 
       /* Health + AC */
@@ -270,79 +261,7 @@
         .hpControls { grid-template-columns: 1fr 1fr 1fr auto; align-items: end; }
       }
 
-      /* Calculator */
-      .calcWrap {
-        margin-top: 12px;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 12px;
-        background: rgba(0,0,0,0.18);
-      }
-      .calcTop {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      @media (min-width: 860px) {
-        .calcTop { grid-template-columns: 1fr auto; align-items: end; }
-      }
-
-      .calcDisplayBox {
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 10px;
-        background: rgba(15, 22, 32, 0.95);
-      }
-      .calcExpr {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        font-size: 14px;
-        color: var(--muted);
-        min-height: 18px;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-      .calcResult {
-        margin-top: 6px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        font-size: 22px;
-        font-weight: 800;
-        color: var(--text);
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-
-      .calcApplyBtns {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
-
-      .calcGrid {
-        margin-top: 12px;
-        display: grid;
-        grid-template-columns: repeat(4, minmax(56px, 1fr));
-        gap: 10px;
-      }
-
-      .calcKey {
-        padding: 14px 10px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: rgba(26, 39, 53, 0.85);
-        color: var(--text);
-        cursor: pointer;
-        font-weight: 750;
-        text-align: center;
-        user-select: none;
-      }
-      .calcKey:hover { background: var(--btnHover); }
-      .calcKey.wide { grid-column: span 2; }
-      .calcKey.danger { color: #fff; background: rgba(255, 107, 107, 0.25); }
-      .calcKey.ok { color: #06120b; background: rgba(124, 230, 165, 0.95); border-color: rgba(124, 230, 165, 0.35); }
-      .calcKey.ok:hover { filter: brightness(0.95); }
-
-      /* Mutations + Reference */
+      /* Mutations */
       .abilityGrid {
         margin-top: 12px;
         display: grid;
@@ -422,6 +341,7 @@
         outline: none;
       }
 
+      /* Stable Mutations list */
       .refList {
         margin-top: 12px;
         display: grid;
@@ -446,7 +366,7 @@
         align-items: baseline;
       }
       .refName { font-weight: 700; }
-      .refLevel { color: var(--muted); font-size: 13px; white-space: nowrap; }
+      .refMeta { color: var(--muted); font-size: 13px; white-space: nowrap; }
       .refDesc {
         margin-top: 6px;
         color: var(--muted);
@@ -461,7 +381,7 @@
         padding: 0;
         background: rgba(15, 22, 32, 0.98);
         color: var(--text);
-        max-width: 760px;
+        max-width: 900px;
         width: calc(100% - 24px);
       }
       dialog::backdrop { background: rgba(0,0,0,0.65); }
@@ -487,6 +407,80 @@
         justify-content: flex-end;
         gap: 10px;
       }
+
+      .popupGrid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      @media (min-width: 900px) {
+        .popupGrid { grid-template-columns: 1fr 1fr; }
+      }
+
+      .popupSection {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(0,0,0,0.18);
+      }
+      .popupSectionTitle {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .popupBtns {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* Calculator popup */
+      .calcDisplayBox {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 10px;
+        background: rgba(15, 22, 32, 0.95);
+      }
+      .calcExpr {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 14px;
+        color: var(--muted);
+        min-height: 18px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .calcResult {
+        margin-top: 6px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .calcGrid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(56px, 1fr));
+        gap: 10px;
+      }
+      .calcKey {
+        padding: 14px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(26, 39, 53, 0.85);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 750;
+        text-align: center;
+        user-select: none;
+      }
+      .calcKey:hover { background: var(--btnHover); }
+      .calcKey.wide { grid-column: span 2; }
+      .calcKey.danger { color: #fff; background: rgba(255, 107, 107, 0.25); }
+      .calcKey.ok { color: #06120b; background: rgba(124, 230, 165, 0.95); border-color: rgba(124, 230, 165, 0.35); }
+      .calcKey.ok:hover { filter: brightness(0.95); }
 
       .footer {
         margin-top: 16px;
@@ -542,31 +536,37 @@
         <!-- Action Economy -->
         <div class="economyWrap" aria-label="Action economy">
           <div class="econRow">
-            <div class="econLabel">Action economy</div>
-            <div class="econIcons" id="econIcons"></div>
-          </div>
-
-          <div class="econRow">
-            <div class="econLabel">Action</div>
+            <div class="econLeft">
+              <div class="econIcon"><img id="iconAction" alt="Action" /></div>
+              <div>Action</div>
+            </div>
             <div class="econBtns">
               <button id="basicAttack" class="btn" type="button">Basic Attack</button>
-              <button id="oppAttack" class="btn" type="button">Attack of Opportunity</button>
               <button id="actionOptions" class="btn" type="button">Additional Options</button>
             </div>
           </div>
 
           <div class="econRow">
-            <div class="econLabel">Bonus action</div>
+            <div class="econLeft">
+              <div class="econIcon"><img id="iconBonus" alt="Bonus action" /></div>
+              <div>Bonus Action</div>
+            </div>
             <div class="econBtns">
               <button id="offhandAttack" class="btn" type="button">Offhand Attack</button>
+              <button id="bonusOptions" class="btn" type="button">Additional Options</button>
             </div>
           </div>
 
           <div class="econRow">
-            <div class="econLabel">Reaction</div>
+            <div class="econLeft">
+              <div class="econIcon"><img id="iconReaction" alt="Reaction" /></div>
+              <div>Reaction</div>
+            </div>
             <div class="econBtns">
+              <button id="oppAttack" class="btn" type="button">Attack of Opportunity</button>
               <button id="readiedAttack" class="btn" type="button">Readied Attack</button>
               <button id="readiedInfo" class="qBtn" type="button" aria-label="Readied action details">?</button>
+              <button id="reactionOptions" class="btn" type="button">Additional Options</button>
             </div>
           </div>
         </div>
@@ -574,10 +574,10 @@
         <div id="statusBar" class="statusBar" role="status" aria-live="polite"></div>
       </section>
 
-      <!-- Health + AC + Calculator -->
-      <section class="card" id="combatCard" aria-label="Health, AC, and Calculator">
+      <!-- Health + AC -->
+      <section class="card" id="combatCard" aria-label="Health and AC">
         <div class="sectionTitle">
-          <h2>Health, AC, and Calculator</h2>
+          <h2>Health and AC</h2>
           <div class="sub"></div>
         </div>
 
@@ -594,9 +594,10 @@
             <div class="statLabel">Temp HP</div>
             <div class="statValue" id="hpTempText">0</div>
           </div>
-          <div class="statBox" id="acBox">
-            <div class="acBadge" id="acBadge">+2</div>
-            <div class="statLabel">AC</div>
+          <div class="statBox">
+            <div class="statLabel">
+              AC <span class="acBuffTag" id="acBuffTag">+2</span>
+            </div>
             <div class="statValue" id="acText">10</div>
           </div>
         </div>
@@ -617,21 +618,92 @@
           <div class="controls" style="margin-top:0">
             <button id="hpFull" class="btn" type="button">Full Heal</button>
             <button id="hpZeroTemp" class="btn" type="button">Clear Temp</button>
+            <button id="openCalc" class="btn" type="button">Open Calculator</button>
           </div>
         </div>
+      </section>
 
-        <div class="calcWrap" aria-label="Calculator">
-          <div class="calcTop">
-            <div class="calcDisplayBox">
-              <div class="calcExpr" id="calcExpr"></div>
-              <div class="calcResult" id="calcResult">0</div>
+      <!-- Mutations -->
+      <section class="card" id="mutationsCard" aria-label="Mutations">
+        <div class="sectionTitle">
+          <h2>Mutations</h2>
+          <div class="sub">Tap Use to spend KI and consume action economy, tap ? for details.</div>
+        </div>
+        <div id="abilityGrid" class="abilityGrid"></div>
+      </section>
+
+      <!-- Stable Mutations -->
+      <section class="card" id="stableCard" aria-label="Stable Mutations">
+        <div class="sectionTitle">
+          <h2>Stable Mutations</h2>
+          <div class="sub">Reference and reminders, these are not spending KI unless noted.</div>
+        </div>
+        <div id="refList" class="refList"></div>
+      </section>
+
+      <footer class="footer">Saved in your browser (localStorage).</footer>
+
+      <!-- Generic info dialog -->
+      <dialog id="infoDialog" aria-label="Info dialog">
+        <div class="dlgHead">
+          <h3 class="dlgTitle" id="dlgTitle">Info</h3>
+          <button class="qBtn" id="dlgX" type="button" aria-label="Close dialog">×</button>
+        </div>
+        <div class="dlgBody">
+          <p id="dlgDesc"></p>
+          <div class="dlgMeta" id="dlgMeta"></div>
+        </div>
+        <div class="dlgActions">
+          <button class="btn" id="dlgClose" type="button">Close</button>
+        </div>
+      </dialog>
+
+      <!-- Options popup -->
+      <dialog id="optionsDialog" aria-label="Additional options dialog">
+        <div class="dlgHead">
+          <h3 class="dlgTitle" id="optTitle">Additional Options</h3>
+          <button class="qBtn" id="optX" type="button" aria-label="Close dialog">×</button>
+        </div>
+        <div class="dlgBody">
+          <div class="popupGrid">
+            <div class="popupSection" id="optSectionGeneric">
+              <div class="popupSectionTitle" id="optGenericTitle">Generic</div>
+              <div class="popupBtns" id="optGenericBtns"></div>
             </div>
 
-            <div class="calcApplyBtns">
-              <button id="applyAsDamage" class="btn" type="button">Apply Result as Damage</button>
-              <button id="applyAsHeal" class="btn" type="button">Apply Result as Healing</button>
-              <button id="calcCopy" class="btn" type="button">Copy Result</button>
+            <div class="popupSection">
+              <div class="popupSectionTitle">Mutations</div>
+              <div class="popupBtns" id="optMutationBtns"></div>
             </div>
+
+            <div class="popupSection">
+              <div class="popupSectionTitle">Stable Mutations</div>
+              <div class="popupBtns" id="optStableBtns"></div>
+            </div>
+          </div>
+          <div class="statusBar" id="optStatus" role="status" aria-live="polite"></div>
+        </div>
+        <div class="dlgActions">
+          <button class="btn" id="optClose" type="button">Close</button>
+        </div>
+      </dialog>
+
+      <!-- Calculator popup -->
+      <dialog id="calcDialog" aria-label="Calculator dialog">
+        <div class="dlgHead">
+          <h3 class="dlgTitle">Calculator</h3>
+          <button class="qBtn" id="calcX" type="button" aria-label="Close dialog">×</button>
+        </div>
+        <div class="dlgBody">
+          <div class="calcDisplayBox">
+            <div class="calcExpr" id="calcExpr"></div>
+            <div class="calcResult" id="calcResult">0</div>
+          </div>
+
+          <div class="controls" style="margin-top: 12px">
+            <button id="applyAsDamage" class="btn" type="button">Apply Result as Damage</button>
+            <button id="applyAsHeal" class="btn" type="button">Apply Result as Healing</button>
+            <button id="calcCopy" class="btn" type="button">Copy Result</button>
           </div>
 
           <div class="calcGrid" id="calcGrid">
@@ -664,63 +736,8 @@
 
           <div class="statusBar" id="calcStatus" role="status" aria-live="polite"></div>
         </div>
-      </section>
-
-      <!-- Mutations -->
-      <section class="card" id="mutationsCard" aria-label="Mutations">
-        <div class="sectionTitle">
-          <h2>Mutations</h2>
-          <div class="sub">Tap Use to spend KI, tap ? for details.</div>
-        </div>
-        <div id="abilityGrid" class="abilityGrid"></div>
-      </section>
-
-      <!-- Reference -->
-      <section class="card" id="referenceCard" aria-label="Reference">
-        <div class="sectionTitle">
-          <h2>Reference</h2>
-        </div>
-        <div id="refList" class="refList"></div>
-      </section>
-
-      <footer class="footer">Saved in your browser (localStorage).</footer>
-
-      <dialog id="infoDialog" aria-label="Info dialog">
-        <div class="dlgHead">
-          <h3 class="dlgTitle" id="dlgTitle">Info</h3>
-          <button class="qBtn" id="dlgX" type="button" aria-label="Close dialog">×</button>
-        </div>
-        <div class="dlgBody">
-          <p id="dlgDesc"></p>
-          <div class="dlgMeta" id="dlgMeta"></div>
-        </div>
         <div class="dlgActions">
-          <button class="btn" id="dlgClose" type="button">Close</button>
-        </div>
-      </dialog>
-
-      <dialog id="optionsDialog" aria-label="Action options dialog">
-        <div class="dlgHead">
-          <h3 class="dlgTitle">Additional Action Options</h3>
-          <button class="qBtn" id="optX" type="button" aria-label="Close dialog">×</button>
-        </div>
-        <div class="dlgBody">
-          <p style="white-space:pre-wrap; margin:0; line-height:1.5; color: var(--muted);">
-Action
-- Dash (move extra up to your speed)
-- Disengage (no opportunity attacks from your movement this turn)
-- Dodge (attacks vs you have disadvantage, Dex saves have advantage)
-- Help (give an ally advantage or assist a task)
-- Hide (make a Stealth check to become hidden)
-- Ready (set a trigger, then use your reaction to act)
-- Search (make a check to find something)
-- Use an Object / Interact (open a door, pull a lever, draw or stow an item, etc.)
-- Improvised actions (DM call): lift/push/drag, break/force open, swing on a rope, tip a statue, grab a ledge, etc.
-- Throw something (usually an improvised weapon or a thrown weapon, resolved as an attack)
-          </p>
-        </div>
-        <div class="dlgActions">
-          <button class="btn" id="optClose" type="button">Close</button>
+          <button class="btn" id="calcClose" type="button">Close</button>
         </div>
       </dialog>
     </main>
@@ -748,7 +765,7 @@ Action
         reactionUsed: "Reaction_used.webp",
       };
 
-      const STORAGE_KEY = "monk_ki_tracker_state_v5_economy";
+      const STORAGE_KEY = "monk_ki_tracker_state_v7_popups";
 
       function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
       function nint(v, fallback = 0) {
@@ -770,18 +787,6 @@ Action
         if (level <= 12) return 4;
         if (level <= 16) return 5;
         return 6;
-      }
-
-      function parseDieFaces(dieStr) {
-        // expects "1d4", "1d6", etc
-        const m = String(dieStr || "").match(/d(\d+)/i);
-        const faces = m ? nint(m[1], 0) : 0;
-        return faces > 0 ? faces : 4;
-      }
-
-      function rollDie(faces) {
-        faces = Math.max(1, nint(faces, 4));
-        return 1 + Math.floor(Math.random() * faces);
       }
 
       const UNARMORED_MOVE = [
@@ -809,7 +814,7 @@ Action
 - If the trigger never happens (or you choose not to react), the readied action is lost when your next turn starts.
 - If you Ready a SPELL, you cast it on your turn and hold it (concentration required), then release it with your reaction when the trigger happens. If you don’t release it, the spell slot is still spent.`;
 
-      // Mutations (added + restored)
+      // Mutations (icon files are in ./Icons/)
       const KI_ABILITIES = [
         { id: "extra_arms", name: "Extra Arms", icon: "Extra_arms.webp", level: 2, cost: 1, actionType: "bonus",
           desc: "Immediately after you take the Attack action on your turn, you can spend 1 ki point to make 4 unarmed strikes as a bonus action." },
@@ -826,6 +831,7 @@ Action
 
 If you reduce the damage to 0, you can catch the missile if it is small enough for you to hold in one hand and you have at least one hand free. If you catch a missile in this way, you can spend 1 ki point to make a ranged attack with a range of 20/60 using the weapon or piece of ammunition you just caught, as part of the same reaction. You make this attack with proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack.` },
 
+        // Controlled Adaptation is the percentage reduction feature
         { id: "controlled_adaptation", name: "Controlled Adaptation", icon: "Controlled_adaptation.webp", level: 3, cost: 1, actionType: "reaction", oncePerShortRest: true,
           desc:
 `You can draw upon your controlled mutation to endure extreme conditions. You gain advantage on ability checks made to withstand harsh environmental effects, such as extreme heat or cold, altitude changes, thin air, crushing pressure, or similar natural hazards.
@@ -869,27 +875,36 @@ Additionally, whenever you make a saving throw and fail, you can spend 1 ki poin
           desc: "You can spend 8 ki points to cast the astral projection spell, without needing material components. When you do so, you can't take any other creatures with you." },
       ];
 
-      const REF_FEATURES = [
-        { level: 2, name: "Unarmored Movement (feature reminder)",
+      // Stable Mutations (no icons), include action economy/rest info if applicable
+      const STABLE_MUTATIONS = [
+        { id: "unarmored_move_feat", level: 2, name: "Unarmored Movement (feature reminder)", actionType: "passive", rest: "none",
           desc:
 `Your speed increases by 10 feet while you are not wearing armor or wielding a shield. This bonus increases when you reach certain monk levels, as shown in the Monk table.
 
 At 9th level, you gain the ability to move along vertical surfaces and across liquids on your turn without falling during the move.` },
-        { level: 4, name: "Adaptive Landing Reflex",
+
+        { id: "adaptive_landing", level: 4, name: "Adaptive Landing Reflex", actionType: "reaction", rest: "none",
           desc: "You can use your reaction when you fall to reduce any falling damage you take by an amount equal to five times your monk level." },
-        { level: 5, name: "Extra Attack",
+
+        { id: "extra_attack", level: 5, name: "Extra Attack", actionType: "passive", rest: "none",
           desc: "Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn." },
-        { level: 7, name: "Evasion",
+
+        { id: "evasion", level: 7, name: "Evasion", actionType: "passive", rest: "none",
           desc: "When you are subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail." },
-        { level: 7, name: "Stillness of Mind",
+
+        { id: "stillness", level: 7, name: "Stillness of Mind", actionType: "action", rest: "none",
           desc: "You can use your action to end one effect on yourself that is causing you to be charmed or frightened." },
-        { level: 10, name: "Purity of Body",
+
+        { id: "purity", level: 10, name: "Purity of Body", actionType: "passive", rest: "none",
           desc: "Your mastery of the ki flowing through you makes you immune to disease and poison." },
-        { level: 13, name: "Tongue of the Sun and Moon",
+
+        { id: "tongue", level: 13, name: "Tongue of the Sun and Moon", actionType: "passive", rest: "none",
           desc: "You understand all spoken languages. Moreover, any creature that can understand a language can understand what you say." },
-        { level: 15, name: "Timeless Body",
+
+        { id: "timeless", level: 15, name: "Timeless Body", actionType: "passive", rest: "none",
           desc: "You suffer none of the frailty of old age, and you can't be aged magically. You can still die of old age. In addition, you no longer need food or water." },
-        { level: 20, name: "Perfect Self",
+
+        { id: "perfect_self", level: 20, name: "Perfect Self", actionType: "passive", rest: "none",
           desc: "When you roll for initiative and have no ki points remaining, you regain 4 ki points." },
       ];
 
@@ -925,15 +940,17 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
               hpMax: 10,
               hpTemp: 0,
               acBase: 10,
-              acBuff: 0,
 
-              // action economy
+              // economy
               actionUsed: false,
               bonusUsed: false,
               reactionUsed: false,
               attacksUsed: 0,
 
-              // per-rest trackers
+              // buffs
+              hardenedSkinActive: false,
+
+              // per-rest
               controlledAdaptationUsed: false,
 
               // calculator
@@ -949,12 +966,13 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
             hpMax: Math.max(0, nint(p.hpMax, 10)),
             hpTemp: Math.max(0, nint(p.hpTemp, 0)),
             acBase: Math.max(0, nint(p.acBase ?? p.ac, 10)),
-            acBuff: Math.max(0, nint(p.acBuff, 0)),
 
             actionUsed: !!p.actionUsed,
             bonusUsed: !!p.bonusUsed,
             reactionUsed: !!p.reactionUsed,
             attacksUsed: Math.max(0, nint(p.attacksUsed, 0)),
+
+            hardenedSkinActive: !!p.hardenedSkinActive,
 
             controlledAdaptationUsed: !!p.controlledAdaptationUsed,
 
@@ -965,10 +983,11 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           return {
             level: 2, ki: 2,
             hpNow: 10, hpMax: 10, hpTemp: 0,
-            acBase: 10, acBuff: 0,
+            acBase: 10,
             actionUsed: false, bonusUsed: false, reactionUsed: false, attacksUsed: 0,
+            hardenedSkinActive: false,
             controlledAdaptationUsed: false,
-            calcExpr: "", calcResult: "0"
+            calcExpr: "", calcResult: "0",
           };
         }
       }
@@ -985,9 +1004,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         state.hpTemp = Math.max(0, nint(state.hpTemp, 0));
 
         state.acBase = Math.max(0, nint(state.acBase, 10));
-        state.acBuff = Math.max(0, nint(state.acBuff, 0));
-
         state.attacksUsed = Math.max(0, nint(state.attacksUsed, 0));
+
         if (typeof state.calcExpr !== "string") state.calcExpr = "";
         if (typeof state.calcResult !== "string") state.calcResult = "0";
       }
@@ -996,6 +1014,12 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.statusBar.textContent = msg || "";
         el.statusBar.classList.remove("ok", "error");
         if (kind) el.statusBar.classList.add(kind);
+      }
+
+      function setOptStatus(msg, kind = "") {
+        el.optStatus.textContent = msg || "";
+        el.optStatus.classList.remove("ok", "error");
+        if (kind) el.optStatus.classList.add(kind);
       }
 
       function setCalcStatus(msg, kind = "") {
@@ -1035,10 +1059,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.hpNowText.textContent = String(state.hpNow);
         el.hpMaxText.textContent = String(state.hpMax);
         el.hpTempText.textContent = String(state.hpTemp);
+        el.acText.textContent = String(state.acBase);
 
-        const acTotal = state.acBase + state.acBuff;
-        el.acText.textContent = String(acTotal);
-        el.acBadge.classList.toggle("show", state.acBuff > 0);
+        el.acBuffTag.classList.toggle("show", state.hardenedSkinActive);
 
         el.hpMaxInput.value = String(state.hpMax);
         el.hpTempInput.value = String(state.hpTemp);
@@ -1067,34 +1090,29 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.gain1.disabled = state.ki >= max;
       }
 
-      function econIcon(name, used) {
-        const wrap = document.createElement("div");
-        wrap.className = "econIcon";
-        const img = document.createElement("img");
-        img.loading = "lazy";
-        img.referrerPolicy = "no-referrer";
-        if (name === "action") img.src = PATHS.iconsBase + (used ? ICONS.actionUsed : ICONS.action);
-        if (name === "bonus") img.src = PATHS.iconsBase + (used ? ICONS.bonusUsed : ICONS.bonus);
-        if (name === "reaction") img.src = PATHS.iconsBase + (used ? ICONS.reactionUsed : ICONS.reaction);
-        wrap.appendChild(img);
-        return wrap;
+      function updateEconomyIcons() {
+        el.iconAction.src = PATHS.iconsBase + (state.actionUsed ? ICONS.actionUsed : ICONS.action);
+        el.iconBonus.src = PATHS.iconsBase + (state.bonusUsed ? ICONS.bonusUsed : ICONS.bonus);
+        el.iconReaction.src = PATHS.iconsBase + (state.reactionUsed ? ICONS.reactionUsed : ICONS.reaction);
       }
 
-      function renderEconomy() {
-        el.econIcons.innerHTML = "";
-        el.econIcons.appendChild(econIcon("action", state.actionUsed));
-        el.econIcons.appendChild(econIcon("bonus", state.bonusUsed));
-        el.econIcons.appendChild(econIcon("reaction", state.reactionUsed));
-
+      function renderEconomyButtons() {
         const maxAttacks = getMaxAttacksPerTurn();
-        const actionAvailableForAttacks = !state.actionUsed || (state.actionUsed && state.attacksUsed < maxAttacks);
-        el.basicAttack.disabled = !actionAvailableForAttacks || state.attacksUsed >= maxAttacks;
 
+        // Basic attack is allowed only until attacksUsed reaches maxAttacks
+        el.basicAttack.disabled = state.attacksUsed >= maxAttacks;
+
+        // "Additional Options" should spend the action, so disable if action already used
         el.actionOptions.disabled = state.actionUsed;
 
+        // Bonus action buttons
         el.offhandAttack.disabled = state.bonusUsed;
+        el.bonusOptions.disabled = state.bonusUsed;
+
+        // Reaction buttons
         el.oppAttack.disabled = state.reactionUsed;
         el.readiedAttack.disabled = state.reactionUsed;
+        el.reactionOptions.disabled = state.reactionUsed;
       }
 
       function openDialog(title, desc, meta) {
@@ -1118,6 +1136,8 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         amount = Math.max(0, Number(amount) || 0);
         if (amount <= 0) return { usedTemp: 0, usedHp: 0 };
 
+        // Hardened Skin is a +2 AC reminder only, no damage reduction here.
+
         const usedTemp = Math.min(state.hpTemp, amount);
         state.hpTemp -= usedTemp;
 
@@ -1139,37 +1159,26 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
       function refillKI(isShortOrLongRest = false) {
         const max = getMaxKI(state.level);
         state.ki = max;
-
         if (isShortOrLongRest) {
           state.controlledAdaptationUsed = false;
         }
-
         saveState(state);
         render();
         setStatus("KI refilled.", "ok");
       }
 
       function nextTurn() {
-        // refresh action economy and clear "until end of next turn" buffs
         state.actionUsed = false;
         state.bonusUsed = false;
         state.reactionUsed = false;
         state.attacksUsed = 0;
-        state.acBuff = 0;
+
+        // "until end of your next turn"
+        state.hardenedSkinActive = false;
 
         saveState(state);
         render();
         setStatus("Next turn: action economy refreshed.", "ok");
-      }
-
-      function useActionAttack() {
-        const maxAttacks = getMaxAttacksPerTurn();
-        if (state.attacksUsed >= maxAttacks) return false;
-
-        state.actionUsed = true;
-        state.attacksUsed += 1;
-
-        return true;
       }
 
       function consumeEconomy(kind) {
@@ -1191,8 +1200,29 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         return true;
       }
 
-      /* ---------- CALCULATOR (safe expression eval) ---------- */
+      function useActionAttack() {
+        const maxAttacks = getMaxAttacksPerTurn();
+        if (state.attacksUsed >= maxAttacks) return false;
 
+        // Taking the Attack action consumes the action (once), but allows multiple attacks
+        state.actionUsed = true;
+        state.attacksUsed += 1;
+
+        return true;
+      }
+
+      function parseDieFaces(dieStr) {
+        const m = String(dieStr || "").match(/d(\d+)/i);
+        const faces = m ? nint(m[1], 0) : 0;
+        return faces > 0 ? faces : 4;
+      }
+
+      function rollDie(faces) {
+        faces = Math.max(1, nint(faces, 4));
+        return 1 + Math.floor(Math.random() * faces);
+      }
+
+      /* ---------- Calculator (safe eval) ---------- */
       function renderCalculator() {
         el.calcExpr.textContent = state.calcExpr || "";
         el.calcResult.textContent = state.calcResult || "0";
@@ -1285,7 +1315,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         return { ok: true, value: r.value };
       }
 
-      /* ---------- Mutations / Reference ---------- */
+      /* ---------- Mutations and Stable Mutations rendering ---------- */
 
       function actionTypeIcon(actionType) {
         if (actionType === "bonus") return ICONS.bonus;
@@ -1293,11 +1323,24 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         return ICONS.action;
       }
 
+      function actionTypeLabel(actionType) {
+        if (actionType === "bonus") return "Bonus Action";
+        if (actionType === "reaction") return "Reaction";
+        if (actionType === "action") return "Action";
+        return "Passive";
+      }
+
+      function stableMetaText(r) {
+        const parts = [];
+        parts.push(actionTypeLabel(r.actionType || "passive"));
+        if (r.rest && r.rest !== "none") parts.push(r.rest);
+        return parts.join(" | ");
+      }
+
       function canUseMutation(a) {
         if (a.oncePerShortRest && a.id === "controlled_adaptation" && state.controlledAdaptationUsed) return false;
 
         if (a.actionType === "action") {
-          // special: basic attacks share action, but mutations just need action available
           if (state.actionUsed) return false;
         }
         if (a.actionType === "bonus") {
@@ -1313,39 +1356,37 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         return true;
       }
 
-      async function handleMutationUse(a, chosenCost) {
-        // economy first
+      async function handleMutationUse(a, chosenCost, statusSink = "main") {
+        const setSinkStatus = (msg, kind) => {
+          if (statusSink === "options") setOptStatus(msg, kind);
+          else setStatus(msg, kind);
+        };
+
+        // consume economy
         if (a.actionType === "action") {
-          if (!consumeEconomy("action")) {
-            setStatus("Action already used this turn.", "error");
-            return;
-          }
+          if (!consumeEconomy("action")) { setSinkStatus("Action already used this turn.", "error"); return; }
         }
         if (a.actionType === "bonus") {
-          if (!consumeEconomy("bonus")) {
-            setStatus("Bonus action already used this turn.", "error");
-            return;
-          }
+          if (!consumeEconomy("bonus")) { setSinkStatus("Bonus action already used this turn.", "error"); return; }
         }
         if (a.actionType === "reaction") {
-          if (!consumeEconomy("reaction")) {
-            setStatus("Reaction already used this turn.", "error");
-            return;
-          }
+          if (!consumeEconomy("reaction")) { setSinkStatus("Reaction already used this turn.", "error"); return; }
         }
 
-        // ki spend
+        // spend KI
         const cost = nint(chosenCost, 0);
         if (!spendKI(cost)) {
-          setStatus(`Not enough KI (need ${cost}).`, "error");
-          // roll back economy consumption if needed
+          // rollback economy consumption
           if (a.actionType === "action") state.actionUsed = false;
           if (a.actionType === "bonus") state.bonusUsed = false;
           if (a.actionType === "reaction") state.reactionUsed = false;
+          setSinkStatus(`Not enough KI (need ${cost}).`, "error");
+          saveState(state);
+          await render();
           return;
         }
 
-        // special effects
+        // effects
         if (a.healsFromMartialDie) {
           const idx = clamp(state.level, 1, 20) - 1;
           const dieStr = MARTIAL_DIE[idx] || "1d4";
@@ -1356,51 +1397,44 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           const healed = applyHeal(healAmt);
           saveState(state);
           await render();
-          setStatus(`${a.name}: rolled ${roll} on ${dieStr} + PB ${pb} = ${healAmt}, healed ${healed}.`, "ok");
+          setSinkStatus(`${a.name}: rolled ${roll} on ${dieStr} + PB ${pb} = ${healAmt}, healed ${healed}.`, "ok");
           return;
         }
 
         if (a.id === "controlled_adaptation") {
-          // once per short rest
           state.controlledAdaptationUsed = true;
 
-          const dmgStr = prompt("Controlled Adaptation: enter incoming damage amount to reduce (number). Leave blank to just roll d100.");
+          const dmgStr = prompt("Controlled Adaptation: enter incoming damage amount to reduce (number).");
+          const dmg = Math.max(0, Number(dmgStr));
           const roll = rollDie(100);
 
-          if (dmgStr !== null && String(dmgStr).trim() !== "") {
-            const dmg = Math.max(0, Number(dmgStr));
-            if (!Number.isFinite(dmg)) {
-              saveState(state);
-              await render();
-              setStatus(`Controlled Adaptation: rolled d100 = ${roll}%. (Damage input invalid)`, "ok");
-              return;
-            }
-            const reduced = Math.ceil(dmg * (roll / 100));
-            const final = Math.max(0, Math.ceil(dmg - reduced));
+          if (!Number.isFinite(dmg)) {
             saveState(state);
             await render();
-            setStatus(`Controlled Adaptation: rolled ${roll}%, reduced ${reduced} from ${dmg}, final ${final}.`, "ok");
+            setSinkStatus(`Controlled Adaptation: rolled d100 = ${roll}%. (Damage input invalid)`, "ok");
             return;
           }
 
+          const reduced = Math.ceil(dmg * (roll / 100));
+          const final = Math.max(0, Math.ceil(dmg - reduced));
+
           saveState(state);
           await render();
-          setStatus(`Controlled Adaptation: rolled d100 = ${roll}%.`, "ok");
+          setSinkStatus(`Controlled Adaptation: rolled ${roll}%, reduced ${reduced} from ${dmg}, final ${final}.`, "ok");
           return;
         }
 
-        if (a.grantsAcBuff) {
-          state.acBuff = Math.max(state.acBuff, nint(a.grantsAcBuff, 0));
+        if (a.id === "hardened_skin") {
+          state.hardenedSkinActive = true;
           saveState(state);
           await render();
-          setStatus(`${a.name} active: AC +${state.acBuff} until Next Turn.`, "ok");
+          setSinkStatus(`${a.name} active: show +2 next to AC until Next Turn.`, "ok");
           return;
         }
 
         saveState(state);
         await render();
-        const costText = a.costOptions ? `${cost}` : `${cost}`;
-        setStatus(`${a.name} used, spent ${costText} KI.`, "ok");
+        setSinkStatus(`${a.name} used, spent ${cost} KI.`, "ok");
       }
 
       function renderAbilities() {
@@ -1444,13 +1478,12 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
           const meta = document.createElement("div");
           meta.className = "abilityMeta";
-
           const costMeta = a.costOptions
             ? `Cost: ${a.costOptions[0]} to ${a.costOptions[a.costOptions.length - 1]} KI`
             : `Cost: ${nint(a.cost, 0)} KI`;
-
-          const restMeta = (a.oncePerShortRest) ? " (once per short rest)" : "";
-          meta.textContent = costMeta + restMeta;
+          const restMeta = (a.oncePerShortRest) ? "Once per short rest." : "";
+          const actMeta = `Uses: ${actionTypeLabel(a.actionType || "action")}`;
+          meta.textContent = [actMeta, costMeta, restMeta].filter(Boolean).join(" | ");
 
           mid.appendChild(name);
           mid.appendChild(meta);
@@ -1491,7 +1524,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
               await render();
               return;
             }
-            await handleMutationUse(a, amt);
+            await handleMutationUse(a, amt, "main");
           });
 
           const q = document.createElement("button");
@@ -1500,12 +1533,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           q.textContent = "?";
           q.setAttribute("aria-label", `Show details for ${a.name}`);
           q.addEventListener("click", () => {
-            const metaLine = a.costOptions
-              ? `Cost: ${a.costOptions[0]} to ${a.costOptions[a.costOptions.length - 1]} KI`
-              : `Cost: ${nint(a.cost, 0)} KI`;
-            const restLine = a.oncePerShortRest ? "Once per short rest." : "";
-            const actionLine = a.actionType ? `Uses: ${a.actionType}` : "Uses: action";
-            openDialog(a.name, a.desc, [actionLine, metaLine, restLine].filter(Boolean).join("  |  "));
+            openDialog(a.name, a.desc, meta.textContent);
           });
 
           btns.appendChild(useBtn);
@@ -1519,34 +1547,25 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           el.abilityGrid.appendChild(card);
         }
 
-        // refresh disabled states based on economy/ki/rest locks
+        // Disable "Use" if not usable
         const cards = el.abilityGrid.querySelectorAll(".abilityCard");
+        const available = KI_ABILITIES.filter(a => state.level >= a.level);
         cards.forEach((card, i) => {
-          const a = availableAbilities[i];
+          const a = available[i];
           const useBtn = card.querySelector("button.btn");
           if (!useBtn || !a) return;
-
-          const minCost = a.costOptions ? Math.min(...a.costOptions) : nint(a.cost, 0);
-          let ok = true;
-
-          if (state.ki < minCost) ok = false;
-          if (a.oncePerShortRest && a.id === "controlled_adaptation" && state.controlledAdaptationUsed) ok = false;
-          if (a.actionType === "action" && state.actionUsed) ok = false;
-          if (a.actionType === "bonus" && state.bonusUsed) ok = false;
-          if (a.actionType === "reaction" && state.reactionUsed) ok = false;
-
-          useBtn.disabled = !ok;
+          useBtn.disabled = !canUseMutation(a);
         });
       }
 
-      function renderReference() {
+      function renderStable() {
         el.refList.innerHTML = "";
-        const available = REF_FEATURES.filter(r => state.level >= r.level);
+        const available = STABLE_MUTATIONS.filter(r => state.level >= r.level);
 
         if (available.length === 0) {
           const empty = document.createElement("div");
           empty.className = "sub";
-          empty.textContent = "No reference items yet.";
+          empty.textContent = "No stable mutations yet.";
           el.refList.appendChild(empty);
           return;
         }
@@ -1562,12 +1581,12 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           name.className = "refName";
           name.textContent = r.name;
 
-          const lvl = document.createElement("div");
-          lvl.className = "refLevel";
-          lvl.textContent = `Level ${r.level}`;
+          const meta = document.createElement("div");
+          meta.className = "refMeta";
+          meta.textContent = stableMetaText(r);
 
           head.appendChild(name);
-          head.appendChild(lvl);
+          head.appendChild(meta);
 
           const desc = document.createElement("div");
           desc.className = "refDesc";
@@ -1575,24 +1594,228 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
           box.appendChild(head);
           box.appendChild(desc);
-
           el.refList.appendChild(box);
         }
       }
 
+      /* ---------- Options popup builder ---------- */
+
+      const GENERIC_ACTION_BUTTONS = [
+        { id: "dash", label: "Dash", text: "Dash (move extra up to your speed)" },
+        { id: "disengage", label: "Disengage", text: "Disengage (no opportunity attacks from your movement this turn)" },
+        { id: "dodge", label: "Dodge", text: "Dodge (attacks vs you have disadvantage, Dex saves have advantage)" },
+        { id: "help", label: "Help", text: "Help (give an ally advantage or assist a task)" },
+        { id: "hide", label: "Hide", text: "Hide (make a Stealth check to become hidden)" },
+        { id: "ready", label: "Ready", text: "Ready (set a trigger, then use your reaction to act)" },
+        { id: "search", label: "Search", text: "Search (make a check to find something)" },
+        { id: "object", label: "Use an Object / Interact", text: "Use an Object / Interact (open a door, pull a lever, draw or stow an item, etc.)" },
+        { id: "improv", label: "Improvised action", text: "Improvised actions (DM call): lift/push/drag, break/force open, swing on a rope, tip a statue, grab a ledge, etc." },
+        { id: "throw", label: "Throw something", text: "Throw something (usually an improvised weapon or a thrown weapon, resolved as an attack)" },
+      ];
+
+      function openOptions(kind) {
+        // kind: "action" | "bonus" | "reaction"
+        el.optTitle.textContent = `Additional Options (${actionTypeLabel(kind)})`;
+        setOptStatus("");
+
+        // Generic section
+        el.optGenericBtns.innerHTML = "";
+        el.optStableBtns.innerHTML = "";
+        el.optMutationBtns.innerHTML = "";
+
+        // Title + show/hide generic section based on kind
+        if (kind === "action") {
+          el.optSectionGeneric.style.display = "";
+          el.optGenericTitle.textContent = "Generic actions";
+          for (const g of GENERIC_ACTION_BUTTONS) {
+            const b = document.createElement("button");
+            b.className = "btn";
+            b.type = "button";
+            b.textContent = g.label;
+            b.disabled = state.actionUsed;
+            b.addEventListener("click", async () => {
+              if (!consumeEconomy("action")) { setOptStatus("Action already used this turn.", "error"); return; }
+              saveState(state);
+              await render();
+              setOptStatus(`Used action: ${g.text}`, "ok");
+            });
+            el.optGenericBtns.appendChild(b);
+          }
+        } else if (kind === "bonus") {
+          el.optSectionGeneric.style.display = "";
+          el.optGenericTitle.textContent = "Bonus actions";
+          const b = document.createElement("button");
+          b.className = "btn";
+          b.type = "button";
+          b.textContent = "Offhand Attack";
+          b.disabled = state.bonusUsed;
+          b.addEventListener("click", async () => {
+            if (!consumeEconomy("bonus")) { setOptStatus("Bonus action already used this turn.", "error"); return; }
+            saveState(state);
+            await render();
+            setOptStatus("Offhand Attack used (bonus action).", "ok");
+          });
+          el.optGenericBtns.appendChild(b);
+        } else {
+          el.optSectionGeneric.style.display = "";
+          el.optGenericTitle.textContent = "Reactions";
+          const b1 = document.createElement("button");
+          b1.className = "btn";
+          b1.type = "button";
+          b1.textContent = "Attack of Opportunity";
+          b1.disabled = state.reactionUsed;
+          b1.addEventListener("click", async () => {
+            if (!consumeEconomy("reaction")) { setOptStatus("Reaction already used this turn.", "error"); return; }
+            saveState(state);
+            await render();
+            setOptStatus("Attack of Opportunity used (reaction).", "ok");
+          });
+
+          const b2 = document.createElement("button");
+          b2.className = "btn";
+          b2.type = "button";
+          b2.textContent = "Readied Attack";
+          b2.disabled = state.reactionUsed;
+          b2.addEventListener("click", async () => {
+            if (!consumeEconomy("reaction")) { setOptStatus("Reaction already used this turn.", "error"); return; }
+            saveState(state);
+            await render();
+            setOptStatus("Readied Attack used (reaction).", "ok");
+          });
+
+          const q = document.createElement("button");
+          q.className = "qBtn";
+          q.type = "button";
+          q.textContent = "?";
+          q.addEventListener("click", () => openDialog("Readied Attack", READIED_TEXT, ""));
+
+          el.optGenericBtns.appendChild(b1);
+          el.optGenericBtns.appendChild(b2);
+          el.optGenericBtns.appendChild(q);
+        }
+
+        // Mutation buttons (only those matching kind)
+        const availMut = KI_ABILITIES.filter(a => state.level >= a.level && (a.actionType || "action") === kind);
+        if (availMut.length === 0) {
+          const sp = document.createElement("div");
+          sp.className = "sub";
+          sp.textContent = "No mutations for this action type.";
+          el.optMutationBtns.appendChild(sp);
+        } else {
+          for (const a of availMut) {
+            const b = document.createElement("button");
+            b.className = "btn";
+            b.type = "button";
+            const costMeta = a.costOptions ? `${a.costOptions[0]}-${a.costOptions[a.costOptions.length - 1]} KI` : `${nint(a.cost,0)} KI`;
+            const restMeta = a.oncePerShortRest ? " (1/Short Rest)" : "";
+            b.textContent = `${a.name} (${costMeta}${restMeta})`;
+            b.disabled = !canUseMutation(a);
+
+            b.addEventListener("click", async () => {
+              let chosen = 0;
+              if (a.costOptions && Array.isArray(a.costOptions)) {
+                const pick = prompt(`${a.name}: choose KI cost (${a.costOptions.join(", ")}).`);
+                chosen = nint(pick, a.costOptions[0]);
+                if (!a.costOptions.includes(chosen)) chosen = a.costOptions[0];
+              } else {
+                chosen = nint(a.cost, 0);
+              }
+
+              if (!canUseMutation(a)) {
+                setOptStatus(`${a.name}: not available right now.`, "error");
+                await render();
+                return;
+              }
+              await handleMutationUse(a, chosen, "options");
+            });
+
+            const q = document.createElement("button");
+            q.className = "qBtn";
+            q.type = "button";
+            q.textContent = "?";
+            q.addEventListener("click", () => {
+              const metaLine = `${actionTypeLabel(a.actionType || "action")} | ${costMeta}${restMeta}`;
+              openDialog(a.name, a.desc, metaLine);
+            });
+
+            el.optMutationBtns.appendChild(b);
+            el.optMutationBtns.appendChild(q);
+          }
+        }
+
+        // Stable mutation buttons (list every stable item, but only those that match kind OR passives as info)
+        const availStable = STABLE_MUTATIONS.filter(r => state.level >= r.level);
+        if (availStable.length === 0) {
+          const sp = document.createElement("div");
+          sp.className = "sub";
+          sp.textContent = "No stable mutations yet.";
+          el.optStableBtns.appendChild(sp);
+        } else {
+          const filtered =
+            availStable.filter(r => (r.actionType || "passive") === kind || (r.actionType || "passive") === "passive");
+
+          for (const r of filtered) {
+            const b = document.createElement("button");
+            b.className = "btn";
+            b.type = "button";
+
+            const meta = stableMetaText(r);
+            b.textContent = `${r.name} (${meta})`;
+
+            // If passive, just show info
+            if ((r.actionType || "passive") === "passive") {
+              b.addEventListener("click", () => openDialog(r.name, r.desc, meta));
+            } else {
+              // Spend the appropriate economy
+              const canSpend =
+                (r.actionType === "action" && !state.actionUsed) ||
+                (r.actionType === "bonus" && !state.bonusUsed) ||
+                (r.actionType === "reaction" && !state.reactionUsed);
+
+              b.disabled = !canSpend;
+
+              b.addEventListener("click", async () => {
+                if (!consumeEconomy(r.actionType)) {
+                  setOptStatus(`${actionTypeLabel(r.actionType)} already used this turn.`, "error");
+                  return;
+                }
+                saveState(state);
+                await render();
+                setOptStatus(`Used ${actionTypeLabel(r.actionType)} for: ${r.name}`, "ok");
+              });
+            }
+
+            const q = document.createElement("button");
+            q.className = "qBtn";
+            q.type = "button";
+            q.textContent = "?";
+            q.addEventListener("click", () => openDialog(r.name, r.desc, meta));
+
+            el.optStableBtns.appendChild(b);
+            el.optStableBtns.appendChild(q);
+          }
+        }
+
+        if (typeof el.optionsDialog.showModal === "function") el.optionsDialog.showModal();
+        else alert("Options dialog not supported in this browser.");
+      }
+
+      /* ---------- Main render ---------- */
       async function render() {
         normalize();
         renderTopStats();
         renderCombat();
         await setBackground();
         renderKIBar();
-        renderEconomy();
+        updateEconomyIcons();
+        renderEconomyButtons();
         renderAbilities();
-        renderReference();
+        renderStable();
         renderCalculator();
         setCalcResultFromExpr();
       }
 
+      /* ---------- Init ---------- */
       function init() {
         el.levelInput = document.getElementById("levelInput");
         el.kiText = document.getElementById("kiText");
@@ -1608,41 +1831,39 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.nextTurn = document.getElementById("nextTurn");
         el.statusBar = document.getElementById("statusBar");
 
-        // action economy
-        el.econIcons = document.getElementById("econIcons");
+        // economy icons
+        el.iconAction = document.getElementById("iconAction");
+        el.iconBonus = document.getElementById("iconBonus");
+        el.iconReaction = document.getElementById("iconReaction");
+
+        // economy buttons
         el.basicAttack = document.getElementById("basicAttack");
-        el.oppAttack = document.getElementById("oppAttack");
         el.actionOptions = document.getElementById("actionOptions");
         el.offhandAttack = document.getElementById("offhandAttack");
+        el.bonusOptions = document.getElementById("bonusOptions");
+        el.oppAttack = document.getElementById("oppAttack");
         el.readiedAttack = document.getElementById("readiedAttack");
         el.readiedInfo = document.getElementById("readiedInfo");
+        el.reactionOptions = document.getElementById("reactionOptions");
 
-        // Combat
+        // combat
         el.hpNowText = document.getElementById("hpNowText");
         el.hpMaxText = document.getElementById("hpMaxText");
         el.hpTempText = document.getElementById("hpTempText");
         el.acText = document.getElementById("acText");
-        el.acBadge = document.getElementById("acBadge");
+        el.acBuffTag = document.getElementById("acBuffTag");
         el.hpMaxInput = document.getElementById("hpMaxInput");
         el.hpTempInput = document.getElementById("hpTempInput");
         el.acInput = document.getElementById("acInput");
         el.hpFull = document.getElementById("hpFull");
         el.hpZeroTemp = document.getElementById("hpZeroTemp");
+        el.openCalc = document.getElementById("openCalc");
 
-        // Calculator
-        el.calcExpr = document.getElementById("calcExpr");
-        el.calcResult = document.getElementById("calcResult");
-        el.calcStatus = document.getElementById("calcStatus");
-        el.calcGrid = document.getElementById("calcGrid");
-        el.applyAsDamage = document.getElementById("applyAsDamage");
-        el.applyAsHeal = document.getElementById("applyAsHeal");
-        el.calcCopy = document.getElementById("calcCopy");
-
-        // Mutations/Reference
+        // lists
         el.abilityGrid = document.getElementById("abilityGrid");
         el.refList = document.getElementById("refList");
 
-        // Dialogs
+        // info dialog
         el.infoDialog = document.getElementById("infoDialog");
         el.dlgTitle = document.getElementById("dlgTitle");
         el.dlgDesc = document.getElementById("dlgDesc");
@@ -1650,17 +1871,37 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.dlgClose = document.getElementById("dlgClose");
         el.dlgX = document.getElementById("dlgX");
 
+        // options dialog
         el.optionsDialog = document.getElementById("optionsDialog");
+        el.optTitle = document.getElementById("optTitle");
+        el.optGenericBtns = document.getElementById("optGenericBtns");
+        el.optMutationBtns = document.getElementById("optMutationBtns");
+        el.optStableBtns = document.getElementById("optStableBtns");
+        el.optStatus = document.getElementById("optStatus");
         el.optClose = document.getElementById("optClose");
         el.optX = document.getElementById("optX");
+        el.optSectionGeneric = document.getElementById("optSectionGeneric");
+        el.optGenericTitle = document.getElementById("optGenericTitle");
 
-        // Load state into inputs
+        // calculator dialog
+        el.calcDialog = document.getElementById("calcDialog");
+        el.calcExpr = document.getElementById("calcExpr");
+        el.calcResult = document.getElementById("calcResult");
+        el.calcStatus = document.getElementById("calcStatus");
+        el.calcGrid = document.getElementById("calcGrid");
+        el.applyAsDamage = document.getElementById("applyAsDamage");
+        el.applyAsHeal = document.getElementById("applyAsHeal");
+        el.calcCopy = document.getElementById("calcCopy");
+        el.calcClose = document.getElementById("calcClose");
+        el.calcX = document.getElementById("calcX");
+
+        // initial input values
         el.levelInput.value = String(state.level);
         el.hpMaxInput.value = String(state.hpMax);
         el.hpTempInput.value = String(state.hpTemp);
         el.acInput.value = String(state.acBase);
 
-        // Level
+        // level change
         el.levelInput.addEventListener("input", async () => {
           state.level = clamp(nint(el.levelInput.value, 1), 1, 20);
           const newMaxKi = getMaxKI(state.level);
@@ -1672,10 +1913,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
 
         // KI buttons
         el.spend1.addEventListener("click", async () => {
-          if (!state.ki) {
-            setStatus("Not enough KI.", "error");
-            return;
-          }
+          if (!state.ki) { setStatus("Not enough KI.", "error"); return; }
           state.ki = Math.max(0, state.ki - 1);
           saveState(state);
           await render();
@@ -1694,7 +1932,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
         el.longRest.addEventListener("click", () => refillKI(true));
         el.nextTurn.addEventListener("click", nextTurn);
 
-        // Action economy buttons
+        // economy buttons
         el.basicAttack.addEventListener("click", async () => {
           normalize();
           const ok = useActionAttack();
@@ -1709,22 +1947,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           setStatus(`Basic Attack used (${state.attacksUsed}/${maxAttacks}).`, "ok");
         });
 
-        el.oppAttack.addEventListener("click", async () => {
-          normalize();
-          if (!consumeEconomy("reaction")) {
-            setStatus("Reaction already used this turn.", "error");
-            await render();
-            return;
-          }
-          saveState(state);
-          await render();
-          setStatus("Attack of Opportunity used (reaction).", "ok");
-        });
-
-        el.actionOptions.addEventListener("click", () => {
-          if (typeof el.optionsDialog.showModal === "function") el.optionsDialog.showModal();
-          else alert("Additional options dialog not supported in this browser.");
-        });
+        el.actionOptions.addEventListener("click", () => openOptions("action"));
+        el.bonusOptions.addEventListener("click", () => openOptions("bonus"));
+        el.reactionOptions.addEventListener("click", () => openOptions("reaction"));
 
         el.offhandAttack.addEventListener("click", async () => {
           normalize();
@@ -1736,6 +1961,18 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           saveState(state);
           await render();
           setStatus("Offhand Attack used (bonus action).", "ok");
+        });
+
+        el.oppAttack.addEventListener("click", async () => {
+          normalize();
+          if (!consumeEconomy("reaction")) {
+            setStatus("Reaction already used this turn.", "error");
+            await render();
+            return;
+          }
+          saveState(state);
+          await render();
+          setStatus("Attack of Opportunity used (reaction).", "ok");
         });
 
         el.readiedAttack.addEventListener("click", async () => {
@@ -1750,11 +1987,9 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           setStatus("Readied Attack used (reaction).", "ok");
         });
 
-        el.readiedInfo.addEventListener("click", () => {
-          openDialog("Readied Attack", READIED_TEXT, "");
-        });
+        el.readiedInfo.addEventListener("click", () => openDialog("Readied Attack", READIED_TEXT, ""));
 
-        // HP / AC setters
+        // HP/AC setters
         el.hpMaxInput.addEventListener("input", async () => {
           state.hpMax = Math.max(0, nint(el.hpMaxInput.value, 0));
           state.hpNow = clamp(state.hpNow, 0, state.hpMax);
@@ -1779,7 +2014,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           state.hpNow = state.hpMax;
           saveState(state);
           await render();
-          setCalcStatus("Healed to full.", "ok");
+          setStatus("Healed to full.", "ok");
         });
 
         el.hpZeroTemp.addEventListener("click", async () => {
@@ -1787,7 +2022,46 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           state.hpTemp = 0;
           saveState(state);
           await render();
-          setCalcStatus("Temp HP cleared.", "ok");
+          setStatus("Temp HP cleared.", "ok");
+        });
+
+        // Info dialog controls
+        el.dlgClose.addEventListener("click", () => el.infoDialog.close());
+        el.dlgX.addEventListener("click", () => el.infoDialog.close());
+        el.infoDialog.addEventListener("click", (e) => {
+          const rect = el.infoDialog.getBoundingClientRect();
+          const inside =
+            e.clientX >= rect.left && e.clientX <= rect.right &&
+            e.clientY >= rect.top && e.clientY <= rect.bottom;
+          if (!inside) el.infoDialog.close();
+        });
+
+        // Options dialog controls
+        el.optClose.addEventListener("click", () => el.optionsDialog.close());
+        el.optX.addEventListener("click", () => el.optionsDialog.close());
+        el.optionsDialog.addEventListener("click", (e) => {
+          const rect = el.optionsDialog.getBoundingClientRect();
+          const inside =
+            e.clientX >= rect.left && e.clientX <= rect.right &&
+            e.clientY >= rect.top && e.clientY <= rect.bottom;
+          if (!inside) el.optionsDialog.close();
+        });
+
+        // Calculator popup open/close
+        el.openCalc.addEventListener("click", () => {
+          setCalcStatus("");
+          if (typeof el.calcDialog.showModal === "function") el.calcDialog.showModal();
+          else alert("Calculator dialog not supported in this browser.");
+        });
+
+        el.calcClose.addEventListener("click", () => el.calcDialog.close());
+        el.calcX.addEventListener("click", () => el.calcDialog.close());
+        el.calcDialog.addEventListener("click", (e) => {
+          const rect = el.calcDialog.getBoundingClientRect();
+          const inside =
+            e.clientX >= rect.left && e.clientX <= rect.right &&
+            e.clientY >= rect.top && e.clientY <= rect.bottom;
+          if (!inside) el.calcDialog.close();
         });
 
         // Calculator buttons
@@ -1799,7 +2073,10 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           calcPress(k);
         });
 
+        // Calculator keyboard, only when calc dialog is open and focus is not in inputs
         document.addEventListener("keydown", (e) => {
+          if (!el.calcDialog.open) return;
+
           const k = e.key;
           const tag = (document.activeElement && document.activeElement.tagName) ? document.activeElement.tagName.toLowerCase() : "";
           if (tag === "input" || tag === "select" || tag === "textarea") return;
@@ -1808,7 +2085,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           if (k === "+" || k === "-" || k === "*" || k === "/" || k === "." || k === "(" || k === ")") return calcPress(k);
           if (k === "Enter" || k === "=") { e.preventDefault(); return calcPress("="); }
           if (k === "Backspace") { e.preventDefault(); return calcPress("⌫"); }
-          if (k === "Escape") return calcPress("C");
+          if (k === "Escape") { e.preventDefault(); return calcPress("C"); }
         });
 
         el.applyAsDamage.addEventListener("click", async () => {
@@ -1842,28 +2119,7 @@ At 9th level, you gain the ability to move along vertical surfaces and across li
           }
         });
 
-        // Info dialog controls
-        el.dlgClose.addEventListener("click", () => el.infoDialog.close());
-        el.dlgX.addEventListener("click", () => el.infoDialog.close());
-        el.infoDialog.addEventListener("click", (e) => {
-          const rect = el.infoDialog.getBoundingClientRect();
-          const inside =
-            e.clientX >= rect.left && e.clientX <= rect.right &&
-            e.clientY >= rect.top && e.clientY <= rect.bottom;
-          if (!inside) el.infoDialog.close();
-        });
-
-        // Options dialog controls
-        el.optClose.addEventListener("click", () => el.optionsDialog.close());
-        el.optX.addEventListener("click", () => el.optionsDialog.close());
-        el.optionsDialog.addEventListener("click", (e) => {
-          const rect = el.optionsDialog.getBoundingClientRect();
-          const inside =
-            e.clientX >= rect.left && e.clientX <= rect.right &&
-            e.clientY >= rect.top && e.clientY <= rect.bottom;
-          if (!inside) el.optionsDialog.close();
-        });
-
+        // Rest of init
         render();
       }
 
